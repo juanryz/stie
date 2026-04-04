@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 
 const FAQ_ITEMS = [
   {
@@ -46,31 +47,64 @@ export function FaqAccordion() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <div className="divide-y divide-border rounded-xl border border-border overflow-hidden">
-      {FAQ_ITEMS.map((item, i) => (
-        <div key={i}>
-          <button
-            className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left hover:bg-muted/50 transition-colors"
-            onClick={() => setOpenIndex(openIndex === i ? null : i)}
-            aria-expanded={openIndex === i}
+    <div className="space-y-4">
+      {FAQ_ITEMS.map((item, i) => {
+        const isOpen = openIndex === i;
+        return (
+          <motion.div
+            key={i}
+            initial={false}
+            animate={{
+              backgroundColor: isOpen ? "#D1E4FF" : "#FFFFFF",
+            }}
+            transition={{ duration: 0.3 }}
+            className="rounded-3xl border border-[#E0E2E4] overflow-hidden shadow-sm"
           >
-            <span className="font-medium text-sm sm:text-base">
-              {item.pertanyaan}
-            </span>
-            <ChevronDown
-              className={cn(
-                "h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200",
-                openIndex === i && "rotate-180"
+            <button
+              className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left focus:outline-none"
+              onClick={() => setOpenIndex(isOpen ? null : i)}
+              aria-expanded={isOpen}
+            >
+              <span className={cn(
+                "font-semibold text-base transition-colors duration-300",
+                isOpen ? "text-[#001D36]" : "text-[#1A1C1E] hover:text-[#0061A4]"
+              )}>
+                {item.pertanyaan}
+              </span>
+              <motion.div
+                initial={false}
+                animate={{ rotate: isOpen ? 180 : 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className={cn(
+                  "flex items-center justify-center w-8 h-8 rounded-full",
+                  isOpen ? "bg-[#0061A4] text-white" : "bg-[#FDFBFF] text-[#43474E]"
+                )}
+              >
+                <ChevronDown className="h-5 w-5" />
+              </motion.div>
+            </button>
+            <AnimatePresence initial={false}>
+              {isOpen && (
+                <motion.div
+                  key="content"
+                  initial="collapsed"
+                  animate="open"
+                  exit="collapsed"
+                  variants={{
+                    open: { opacity: 1, height: "auto", marginBottom: 20 },
+                    collapsed: { opacity: 0, height: 0, marginBottom: 0 }
+                  }}
+                  transition={{ duration: 0.3, ease: [0.04, 0.62, 0.23, 0.98] as [number, number, number, number] }}
+                >
+                  <div className="px-6 pb-2 text-[15px] text-[#001D36]/80 leading-relaxed font-medium">
+                    {item.jawaban}
+                  </div>
+                </motion.div>
               )}
-            />
-          </button>
-          {openIndex === i && (
-            <div className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed bg-muted/20">
-              {item.jawaban}
-            </div>
-          )}
-        </div>
-      ))}
+            </AnimatePresence>
+          </motion.div>
+        );
+      })}
     </div>
   );
 }

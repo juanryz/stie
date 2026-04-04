@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
@@ -22,7 +22,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") ?? "";
@@ -52,12 +52,9 @@ export default function LoginPage() {
 
       toast.success("Login berhasil!");
 
-      // Redirect berdasarkan callbackUrl atau default per role
-      // next-auth akan handle redirect berdasarkan session
       if (callbackUrl && callbackUrl.startsWith("/")) {
         router.push(callbackUrl);
       } else {
-        // Fetch session untuk tahu role
         const res = await fetch("/api/auth/session");
         const session = await res.json();
         const role = session?.user?.role;
@@ -152,5 +149,13 @@ export default function LoginPage() {
         </CardFooter>
       </form>
     </Card>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center p-8"><Loader2 className="animate-spin h-8 w-8 text-[#1B4F72]" /></div>}>
+      <LoginForm />
+    </Suspense>
   );
 }
