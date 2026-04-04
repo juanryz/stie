@@ -139,3 +139,15 @@
     @apply font-sans;
   }
 }
+
+@media print {
+  header, nav, .print\:hidden {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+  }
+  #kartu-pendaftaran {
+    page-break-inside: avoid;
+  }
+}

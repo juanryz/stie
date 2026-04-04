@@ -1,11 +1,14 @@
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+// Gunakan publishable key (pengganti anon key di Supabase versi baru)
+const supabasePublishableKey =
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY ||
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
-// Client untuk sisi browser (anon key)
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Client untuk sisi browser (publishable key)
+export const supabase = createClient(supabaseUrl, supabasePublishableKey);
 
 // Client untuk sisi server (service role — bypass RLS)
 export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);

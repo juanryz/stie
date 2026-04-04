@@ -12,7 +12,10 @@ export default auth((req: NextAuthRequest) => {
   const userRole = session?.user?.role as string | undefined;
 
   // Halaman yang butuh auth
-  const protectedPaths = ["/dashboard", "/admin", "/status", "/dokumen", "/kartu"];
+  const protectedPaths = [
+    "/dashboard", "/admin", "/verifikasi", "/laporan", "/settings", "/pengumuman",
+    "/status", "/dokumen", "/kartu", "/daftar",
+  ];
   const needsAuth = protectedPaths.some((p) => pathname.startsWith(p));
 
   if (needsAuth && !session) {
@@ -33,13 +36,16 @@ export default auth((req: NextAuthRequest) => {
     return NextResponse.redirect(new URL("/status", req.url));
   }
 
-  // Proteksi /status, /dokumen, /kartu — hanya PENDAFTAR
-  const pendaftarPaths = ["/status", "/dokumen", "/kartu"];
-  if (
-    pendaftarPaths.some((p) => pathname.startsWith(p)) &&
-    DASHBOARD_ROLES.includes(userRole)
-  ) {
+  // Proteksi /status, /dokumen, /kartu, /daftar — hanya PENDAFTAR
+  const pendaftarPaths = ["/status", "/dokumen", "/kartu", "/daftar"];
+  if (pendaftarPaths.some((p) => pathname.startsWith(p)) && DASHBOARD_ROLES.includes(userRole)) {
     return NextResponse.redirect(new URL("/dashboard", req.url));
+  }
+
+  // Proteksi /verifikasi, /laporan, /settings, /pengumuman — hanya DASHBOARD_ROLES
+  const adminOnlyPaths = ["/verifikasi", "/laporan", "/settings", "/pengumuman"];
+  if (adminOnlyPaths.some((p) => pathname.startsWith(p)) && PENDAFTAR_ROLES.includes(userRole)) {
+    return NextResponse.redirect(new URL("/status", req.url));
   }
 
   // Jika sudah login, redirect dari halaman auth
