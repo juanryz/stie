@@ -16,7 +16,7 @@ export function LandingPageClient({ periode, prodiList, isPmbOpen }: any) {
   return (
     <>
       {/* HERO SECTION MATCHING material.io/m3 */}
-      <section className="pt-24 pb-20 px-8 sm:px-16 lg:px-24">
+      <section id="home" className="pt-24 pb-20 px-8 sm:px-16 lg:px-24">
         <motion.div 
            initial={{ opacity: 0, y: 30 }}
            animate={{ opacity: 1, y: 0 }}
