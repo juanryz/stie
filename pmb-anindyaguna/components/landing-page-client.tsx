@@ -58,7 +58,7 @@ export function LandingPageClient({ periode, prodiList, isPmbOpen }: any) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-6"
         >
           <div className="h-[400px] rounded-[32px] bg-[#111111] bg-[url('/images/hero_student.png')] bg-cover bg-center p-8 flex flex-col justify-end relative overflow-hidden group border border-[#494841]">
              {/* Dark gradient overlay to ensure text is readable */}
@@ -81,13 +81,6 @@ export function LandingPageClient({ periode, prodiList, isPmbOpen }: any) {
                <h3 className="text-2xl font-normal text-white mb-2 drop-shadow-lg">Kurikulum Standar Industri</h3>
                <p className="text-[#E6E1E5] drop-shadow-md">Kurikulum adaptif yang menyesuaikan perubahan.</p>
              </div>
-          </div>
-
-          <div className="h-[400px] rounded-[32px] bg-[#111111] bg-[url('/images/hero_library.png')] bg-cover bg-center p-8 flex flex-col justify-center items-center text-center relative border border-[#494841] group cursor-pointer hover:border-[#EAC956]/50 transition-colors overflow-hidden">
-             <div className="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition-colors"></div>
-             
-             <PlayCircle className="w-16 h-16 text-[#EAC956] mb-6 relative z-10 group-hover:scale-110 transition-transform drop-shadow-lg" />
-             <h3 className="text-xl font-normal text-white relative z-10 drop-shadow-md">Lihat Tur Kampus Virtual</h3>
           </div>
         </motion.div>
       </section>
