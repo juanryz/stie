@@ -17,11 +17,11 @@ import { Button } from "@/components/ui/button";
 
 function NavItem({ icon, label, active = false }: { icon: React.ReactNode, label: string, active?: boolean }) {
   return (
-    <div className={`flex flex-col items-center gap-1.5 cursor-pointer group`}>
-      <div className={`w-14 h-8 rounded-full flex items-center justify-center transition-colors ${active ? "bg-[#EAC956] text-[#3A2E00]" : "text-[#D2CEBE] group-hover:bg-[#2B2A23]"}`}>
-        {React.cloneElement(icon as React.ReactElement, { className: 'w-5 h-5' })}
+    <div className={`flex flex-col items-center gap-2 cursor-pointer group`}>
+      <div className={`w-16 h-10 rounded-full flex items-center justify-center transition-colors ${active ? "bg-[#EAC956] text-[#3A2E00]" : "text-[#D2CEBE] group-hover:bg-[#2B2A23]"}`}>
+        {React.cloneElement(icon as any, { className: 'w-6 h-6' })}
       </div>
-      <span className={`text-[11px] font-medium ${active ? "text-[#F8F6F1]" : "text-[#D2CEBE]"}`}>{label}</span>
+      <span className={`text-[13px] font-medium tracking-wide ${active ? "text-[#F8F6F1]" : "text-[#D2CEBE]"}`}>{label}</span>
     </div>
   )
 }
@@ -49,18 +49,21 @@ export function M3Shell({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* M3 NAVIGATION RAIL (Visible on desktop) */}
-      <nav className="hidden md:flex flex-col w-[100px] h-screen py-8 items-center bg-[#111111] shrink-0 border-r border-[#2D2A26]">
-        <div className="bg-[#EAC956]/10 text-[#EAC956] p-3 rounded-xl mb-12">
-           <GraduationCap className="w-6 h-6" />
+      <nav className="hidden md:flex flex-col w-[120px] h-screen py-8 items-center justify-between bg-[#111111] shrink-0 border-r border-[#2D2A26]">
+        {/* LOGO DI ATAS */}
+        <div className="bg-[#EAC956]/10 text-[#EAC956] p-4 rounded-xl">
+           <GraduationCap className="w-8 h-8" />
         </div>
         
-        <div className="flex flex-col gap-6">
+        {/* MENU TEPAT DI TENGAH */}
+        <div className="flex flex-col gap-8 flex-1 justify-center items-center -mt-8">
           <Link href="/"><NavItem icon={<Home />} label="Beranda" active /></Link>
           <Link href="/#prodi"><NavItem icon={<BookOpen />} label="Prodi" /></Link>
           <Link href="/#jalur"><NavItem icon={<Layers />} label="Jalur" /></Link>
         </div>
 
-        <div className="mt-auto flex flex-col gap-6">
+        {/* BAWAH / LOGIN */}
+        <div className="flex flex-col gap-6">
            <Link href="/login">
               <NavItem icon={<UserCircle2 />} label="Masuk" />
            </Link>

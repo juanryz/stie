@@ -60,29 +60,34 @@ export function LandingPageClient({ periode, prodiList, isPmbOpen }: any) {
           transition={{ duration: 0.8 }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          {/* Decorative Cards */}
-          <div className="h-[400px] rounded-[32px] bg-gradient-to-br from-[#5A4800] to-[#EAC956]/20 p-8 flex flex-col justify-end relative overflow-hidden group border border-[#5A4800]">
-             <div className="absolute top-8 right-8 text-[#EAC956]/20 group-hover:scale-110 transition-transform">
-                 <GraduationCap className="w-32 h-32" />
+          <div className="h-[400px] rounded-[32px] bg-[#111111] bg-[url('/images/hero_student.png')] bg-cover bg-center p-8 flex flex-col justify-end relative overflow-hidden group border border-[#494841]">
+             {/* Dark gradient overlay to ensure text is readable */}
+             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+             
+             <div className="relative z-10 transition-transform group-hover:translate-y-[-5px]">
+               <h3 className="text-3xl font-normal text-[#F8F6F1] mb-2">Lulusan Kompetitif</h3>
+               <p className="text-[#D2CEBE]">Menjadi profesional Siap Kerja</p>
              </div>
-             <h3 className="text-3xl font-normal text-[#F8F6F1] mb-2">Lulusan Kompetitif</h3>
-             <p className="text-[#D2CEBE]">Menjadi profesional Siap Kerja</p>
           </div>
           
-          <div className="h-[400px] rounded-[32px] bg-[#2B2A23] p-8 border border-[#494841] flex flex-col justify-between">
-             <div className="flex justify-between items-start">
-                <div className="bg-[#EAC956] text-[#3A2E00] px-3 py-1 rounded-full text-xs font-bold">INFO AKADEMIK</div>
-                <Info className="text-[#D2CEBE]" />
+          <div className="h-[400px] rounded-[32px] bg-[#111111] bg-[url('/images/hero_campus.png')] bg-cover bg-center p-8 flex flex-col justify-between overflow-hidden group border border-[#494841] relative">
+             <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>
+             
+             <div className="flex justify-between items-start relative z-10">
+                <div className="bg-[#EAC956] text-[#3A2E00] px-3 py-1 rounded-full text-xs font-bold shadow-lg">INFO AKADEMIK</div>
+                <Info className="text-white drop-shadow-md" />
              </div>
-             <div>
-               <h3 className="text-2xl font-normal text-white mb-2">Kurikulum Standar Industri</h3>
-               <p className="text-[#D2CEBE]">Kurikulum adaptif yang menyesuaikan perubahan.</p>
+             <div className="relative z-10">
+               <h3 className="text-2xl font-normal text-white mb-2 drop-shadow-lg">Kurikulum Standar Industri</h3>
+               <p className="text-[#E6E1E5] drop-shadow-md">Kurikulum adaptif yang menyesuaikan perubahan.</p>
              </div>
           </div>
 
-          <div className="h-[400px] rounded-[32px] bg-gradient-to-tr from-[#1A1916] to-[#2B2A23] p-8 flex flex-col justify-center items-center text-center relative border border-[#494841] group cursor-pointer hover:border-[#EAC956]/50 transition-colors">
-             <PlayCircle className="w-16 h-16 text-[#EAC956] mb-6 group-hover:scale-110 transition-transform" />
-             <h3 className="text-xl font-normal text-[#E2E8F0]">Lihat Tur Kampus Virtual</h3>
+          <div className="h-[400px] rounded-[32px] bg-[#111111] bg-[url('/images/hero_library.png')] bg-cover bg-center p-8 flex flex-col justify-center items-center text-center relative border border-[#494841] group cursor-pointer hover:border-[#EAC956]/50 transition-colors overflow-hidden">
+             <div className="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition-colors"></div>
+             
+             <PlayCircle className="w-16 h-16 text-[#EAC956] mb-6 relative z-10 group-hover:scale-110 transition-transform drop-shadow-lg" />
+             <h3 className="text-xl font-normal text-white relative z-10 drop-shadow-md">Lihat Tur Kampus Virtual</h3>
           </div>
         </motion.div>
       </section>
