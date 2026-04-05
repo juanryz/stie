@@ -11,13 +11,13 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-4">
-      <div className="mb-8 text-center">
+    <div className="flex flex-col items-center justify-center p-4 min-h-[80vh]">
+      <div className="mb-8 text-center mt-12">
         <Link href="/" className="inline-block">
-          <h1 className="text-2xl font-bold text-[#1B4F72]">
-            PMB STIE Anindyaguna
+          <h1 className="text-3xl font-normal text-[#EAC956]">
+            STIE Anindyaguna
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-sm text-[#D2CEBE] mt-1">
             Penerimaan Mahasiswa Baru
           </p>
         </Link>

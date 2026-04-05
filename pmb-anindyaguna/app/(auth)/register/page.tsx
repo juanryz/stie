@@ -81,74 +81,78 @@ export default function RegisterPage() {
   }
 
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full max-w-md bg-[#2B2A23] border-[#494841] text-white">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl">Buat Akun</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-2xl font-normal">Buat Akun</CardTitle>
+        <CardDescription className="text-[#D2CEBE]">
           Daftar akun untuk memulai proses pendaftaran mahasiswa baru
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Nama Lengkap</Label>
+            <Label htmlFor="name" className="text-[#EAC956]">Nama Lengkap</Label>
             <Input
               id="name"
               type="text"
               placeholder="Nama sesuai KTP"
               autoComplete="name"
               aria-invalid={!!errors.name}
+              className="bg-[#1C1A17] border-[#494841] focus-visible:ring-[#EAC956] text-white"
               {...register("name")}
             />
             {errors.name && (
-              <p className="text-sm text-destructive">{errors.name.message}</p>
+              <p className="text-sm text-red-400">{errors.name.message}</p>
             )}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email Aktif</Label>
+            <Label htmlFor="email" className="text-[#EAC956]">Email Aktif</Label>
             <Input
               id="email"
               type="email"
               placeholder="nama@email.com"
               autoComplete="email"
               aria-invalid={!!errors.email}
+              className="bg-[#1C1A17] border-[#494841] focus-visible:ring-[#EAC956] text-white"
               {...register("email")}
             />
             {errors.email && (
-              <p className="text-sm text-destructive">{errors.email.message}</p>
+              <p className="text-sm text-red-400">{errors.email.message}</p>
             )}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password" className="text-[#EAC956]">Password</Label>
             <Input
               id="password"
               type="password"
               placeholder="Min. 8 karakter, huruf besar & angka"
               autoComplete="new-password"
               aria-invalid={!!errors.password}
+              className="bg-[#1C1A17] border-[#494841] focus-visible:ring-[#EAC956] text-white"
               {...register("password")}
             />
             {errors.password && (
-              <p className="text-sm text-destructive">
+              <p className="text-sm text-red-400">
                 {errors.password.message}
               </p>
             )}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Konfirmasi Password</Label>
+            <Label htmlFor="confirmPassword" className="text-[#EAC956]">Konfirmasi Password</Label>
             <Input
               id="confirmPassword"
               type="password"
               placeholder="Ulangi password"
               autoComplete="new-password"
               aria-invalid={!!errors.confirmPassword}
+              className="bg-[#1C1A17] border-[#494841] focus-visible:ring-[#EAC956] text-white"
               {...register("confirmPassword")}
             />
             {errors.confirmPassword && (
-              <p className="text-sm text-destructive">
+              <p className="text-sm text-red-400">
                 {errors.confirmPassword.message}
               </p>
             )}
@@ -158,18 +162,18 @@ export default function RegisterPage() {
         <CardFooter className="flex flex-col gap-4">
           <Button
             type="submit"
-            className="w-full bg-[#1B4F72] hover:bg-[#154060]"
+            className="w-full bg-[#EAC956] hover:bg-[#FCE68A] text-[#3A2E00] rounded-full h-12 text-lg font-medium shadow-md"
             disabled={isLoading}
           >
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {isLoading ? "Membuat akun..." : "Buat Akun"}
           </Button>
 
-          <p className="text-sm text-center text-muted-foreground">
+          <p className="text-sm text-center text-[#D2CEBE]">
             Sudah punya akun?{" "}
             <Link
               href="/login"
-              className="text-[#1B4F72] font-medium hover:underline"
+              className="text-[#EAC956] font-medium hover:text-[#FCE68A]"
             >
               Masuk di sini
             </Link>

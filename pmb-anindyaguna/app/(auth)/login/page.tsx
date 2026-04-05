@@ -77,36 +77,37 @@ function LoginForm() {
   }
 
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full max-w-md bg-[#2B2A23] border-[#494841] text-white">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl">Masuk</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-2xl font-normal">Masuk</CardTitle>
+        <CardDescription className="text-[#D2CEBE]">
           Masukkan email dan password untuk masuk ke akun Anda
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email" className="text-[#EAC956]">Email</Label>
             <Input
               id="email"
               type="email"
               placeholder="nama@email.com"
               autoComplete="email"
               aria-invalid={!!errors.email}
+              className="bg-[#1C1A17] border-[#494841] focus-visible:ring-[#EAC956] text-white"
               {...register("email")}
             />
             {errors.email && (
-              <p className="text-sm text-destructive">{errors.email.message}</p>
+              <p className="text-sm text-red-400">{errors.email.message}</p>
             )}
           </div>
 
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-[#EAC956]">Password</Label>
               <Link
                 href="/forgot-password"
-                className="text-sm text-[#1B4F72] hover:underline"
+                className="text-sm text-[#EAC956] hover:text-[#FCE68A]"
               >
                 Lupa password?
               </Link>
@@ -117,10 +118,11 @@ function LoginForm() {
               placeholder="••••••••"
               autoComplete="current-password"
               aria-invalid={!!errors.password}
+              className="bg-[#1C1A17] border-[#494841] focus-visible:ring-[#EAC956] text-white"
               {...register("password")}
             />
             {errors.password && (
-              <p className="text-sm text-destructive">
+              <p className="text-sm text-red-400">
                 {errors.password.message}
               </p>
             )}
@@ -130,14 +132,14 @@ function LoginForm() {
         <CardFooter className="flex flex-col gap-4">
           <Button
             type="submit"
-            className="w-full bg-[#1B4F72] hover:bg-[#154060]"
+            className="w-full bg-[#EAC956] hover:bg-[#FCE68A] text-[#3A2E00] rounded-full h-12 text-lg font-medium shadow-md"
             disabled={isLoading}
           >
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {isLoading ? "Memproses..." : "Masuk"}
           </Button>
 
-          <p className="text-sm text-center text-muted-foreground">
+          <p className="text-sm text-center text-[#D2CEBE]">
             Belum punya akun?{" "}
             <Link
               href="/register"

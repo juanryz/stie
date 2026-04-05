@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Roboto, Roboto_Mono } from "next/font/google";
 import { Providers } from "@/components/providers";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const roboto = Roboto({
+  variable: "--font-roboto",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "700", "900"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const robotoMono = Roboto_Mono({
+  variable: "--font-roboto-mono",
   subsets: ["latin"],
 });
 
@@ -19,6 +20,8 @@ export const metadata: Metadata = {
     "Sistem Penerimaan Mahasiswa Baru STIE Anindyaguna Semarang — Daftarkan diri Anda sekarang",
 };
 
+import { M3Shell } from "@/components/m3-shell";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -27,10 +30,14 @@ export default function RootLayout({
   return (
     <html
       lang="id"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${roboto.variable} ${robotoMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
-        <Providers>{children}</Providers>
+      <body className="min-h-full flex flex-col bg-[#111111]">
+        <Providers>
+          <M3Shell>
+            {children}
+          </M3Shell>
+        </Providers>
       </body>
     </html>
   );
