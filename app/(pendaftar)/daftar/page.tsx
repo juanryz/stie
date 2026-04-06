@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { FormPendaftaran } from "./form-pendaftaran";
+
+export const dynamic = "force-dynamic";
 import { GraduationCap, Sparkles } from "lucide-react";
 
 export const metadata: Metadata = {

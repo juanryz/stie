@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { LandingPageClient } from "@/components/landing-page-client";
 
+export const dynamic = "force-dynamic";
+
 async function getPmbData() {
   const [periode, prodiList, announcements] = await Promise.all([
     prisma.periodePMB.findFirst({ where: { aktif: true } }),

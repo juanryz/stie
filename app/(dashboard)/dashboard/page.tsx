@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+
+export const dynamic = "force-dynamic";
+
 import { LABEL_JALUR, LABEL_STATUS } from "@/types";
 import { Users, Clock, CheckCircle2, XCircle, TrendingUp, LayoutDashboard } from "lucide-react";
 import { cn } from "@/lib/utils";
