@@ -229,6 +229,7 @@ model SystemConfig {
   namaInstansi  String   @default("STIE Anindyaguna")
   emailKontak   String?
   logoUrl       String?
+  primaryColor  String?  @default("#EAC956")
   alamat        String?
   aktif         Boolean  @default(true)
   updatedAt     DateTime @updatedAt

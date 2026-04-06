@@ -10,7 +10,8 @@ export async function GET() {
         data: {
           namaInstansi: "STIE Anindyaguna Semarang",
           emailKontak: "admin@stie-anindyaguna.ac.id",
-          logoUrl: null
+          logoUrl: null,
+          primaryColor: "#EAC956"
         }
       });
     }
@@ -28,18 +29,18 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { namaInstansi, emailKontak, logoUrl } = body;
+    const { namaInstansi, emailKontak, logoUrl, primaryColor } = body;
 
     let config = await (prisma as any).systemConfig.findFirst();
     
     if (config) {
       config = await (prisma as any).systemConfig.update({
         where: { id: config.id },
-        data: { namaInstansi, emailKontak, logoUrl }
+        data: { namaInstansi, emailKontak, logoUrl, primaryColor }
       });
     } else {
       config = await (prisma as any).systemConfig.create({
-        data: { namaInstansi, emailKontak, logoUrl }
+        data: { namaInstansi, emailKontak, logoUrl, primaryColor }
       });
     }
 
