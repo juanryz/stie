@@ -209,3 +209,27 @@ enum StatusDokumen {
   VALID
   DITOLAK
 }
+
+model Pengumuman {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  judul     String
+  konten    String
+  ringkasan String?
+  gambarUrls String[]
+  kategori  String
+  pin       Boolean  @default(false)
+  aktif     Boolean  @default(true)
+  diubahOleh String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SystemConfig {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  namaInstansi  String   @default("STIE Anindyaguna")
+  emailKontak   String?
+  logoUrl       String?
+  alamat        String?
+  aktif         Boolean  @default(true)
+  updatedAt     DateTime @updatedAt
+}

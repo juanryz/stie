@@ -3,11 +3,14 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { CheckCircle2, Clock, FileText, CreditCard, AlertCircle, XCircle } from "lucide-react";
+import { 
+  CheckCircle2, Clock, FileText, CreditCard, AlertCircle, XCircle, 
+  ArrowRight, ShieldCheck, Calendar, MapPin, GraduationCap, 
+  User, Mail, Phone, Fingerprint, Sparkles, Pin
+} from "lucide-react";
 import { LABEL_STATUS, LABEL_JALUR, WARNA_STATUS } from "@/types";
 import { formatTanggal } from "@/lib/utils";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { StatusPMB } from "@prisma/client";
 
@@ -20,11 +23,11 @@ const STATUS_ICON: Record<StatusPMB, React.ElementType> = {
   DOKUMEN_TIDAK_LENGKAP: AlertCircle,
   TERVERIFIKASI: CheckCircle2,
   TERDAFTAR_TES: CheckCircle2,
-  LULUS_TES: CheckCircle2,
+  LULUS_TES: Sparkles,
   TIDAK_LULUS_TES: XCircle,
-  DITERIMA: CheckCircle2,
+  DITERIMA: ShieldCheck,
   DITOLAK: XCircle,
-  DAFTAR_ULANG: CheckCircle2,
+  DAFTAR_ULANG: Sparkles,
   MENGUNDURKAN_DIRI: XCircle,
 };
 
@@ -34,7 +37,7 @@ async function getPendaftar(userId: string) {
     include: {
       prodi: true,
       periode: true,
-      riwayatStatus: { orderBy: { createdAt: "asc" } },
+      riwayatStatus: { orderBy: { createdAt: "desc" } },
       dokumen: { orderBy: { uploadedAt: "asc" } },
     },
   });
@@ -48,15 +51,17 @@ export default async function StatusPage() {
 
   if (!pendaftar) {
     return (
-      <div className="text-center py-16 space-y-4">
-        <AlertCircle className="h-12 w-12 text-muted-foreground mx-auto" />
-        <h2 className="text-xl font-semibold">Belum Ada Pendaftaran</h2>
-        <p className="text-muted-foreground text-sm max-w-sm mx-auto">
-          Anda belum mengisi formulir pendaftaran. Mulai pendaftaran sekarang.
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-6">
+        <div className="w-24 h-24 bg-[#EAC956]/5 rounded-full flex items-center justify-center mb-8 border border-[#EAC956]/20 shadow-2xl">
+           <GraduationCap className="h-10 w-10 text-[#EAC956]" />
+        </div>
+        <h2 className="text-4xl text-white font-normal mb-4 tracking-tight">Belum Ada Pendaftaran</h2>
+        <p className="text-[#D2CEBE] font-light max-w-md mx-auto mb-10 leading-relaxed">
+          Anda belum memulai proses pendaftaran di portal PMB. Daftarkan diri Anda sekarang untuk bergabung bersama STIE Anindyaguna.
         </p>
         <Link href="/daftar">
-          <Button className="bg-[#1B4F72] hover:bg-[#154060] mt-2">
-            Isi Formulir Pendaftaran
+          <Button className="bg-[#EAC956] hover:bg-[#FCE68A] text-[#3A2E00] h-14 px-10 rounded-2xl font-bold text-lg shadow-3xl hover:scale-105 transition-all">
+            Mulai Pendaftaran Sekarang <ArrowRight className="ml-2 w-5 h-5" />
           </Button>
         </Link>
       </div>
@@ -64,142 +69,166 @@ export default async function StatusPage() {
   }
 
   const Icon = STATUS_ICON[pendaftar.status];
-  const warnaClass = WARNA_STATUS[pendaftar.status];
   const dokumenValid = pendaftar.dokumen.filter((d) => d.status === "VALID").length;
   const dokumenTotal = pendaftar.dokumen.length;
 
   return (
-    <div className="space-y-6">
-      {/* Header status */}
-      <div className="rounded-xl bg-white border border-border p-6 shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+    <div className="max-w-6xl mx-auto pb-32">
+      {/* HEADER SECTION */}
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-16 gap-8 border-b border-[#2D2A26] pb-12">
+        <div className="space-y-4">
+           <div className="inline-flex items-center gap-3 bg-[#EAC956]/10 text-[#EAC956] px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest border border-[#EAC956]/20 ring-1 ring-[#EAC956]/10">
+             <Fingerprint className="w-4 h-4" />
+             Nomor Registrasi: {pendaftar.noPendaftaran}
+           </div>
+           <h1 className="text-7xl md:text-8xl text-white font-normal tracking-tighter mb-4 flex items-center gap-4">
+              Halo, <span className="text-[#EAC956] drop-shadow-[0_0_15px_rgba(234,201,86,0.2)]">{pendaftar.nama.split(' ')[0]}</span>! <span className="animate-wave origin-bottom-right inline-block">👋</span>
+           </h1>
+           <p className="text-2xl text-[#D2CEBE] font-light italic opacity-80 decoration-[#EAC956]/20 underline decoration-2 underline-offset-8">Selamat datang kembali di portal pendaftaran Anda.</p>
+        </div>
+
+        <div className={cn(
+          "px-8 py-4 rounded-3xl border flex items-center gap-4 shadow-2xl transition-all",
+          pendaftar.status === "DITERIMA" || pendaftar.status === "TERVERIFIKASI" 
+            ? "bg-green-500/10 border-green-500/30 text-green-400" 
+            : "bg-[#EAC956]/10 border-[#EAC956]/30 text-[#EAC956]"
+        )}>
+          <div className="w-12 h-12 rounded-2xl bg-current/10 flex items-center justify-center">
+            <Icon className="w-6 h-6" />
+          </div>
           <div>
-            <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium">
-              No. Pendaftaran
-            </p>
-            <p className="text-2xl font-bold text-[#1B4F72] mt-0.5 font-mono tracking-wide">
-              {pendaftar.noPendaftaran}
-            </p>
-            <p className="text-sm text-muted-foreground mt-1">
-              {pendaftar.prodi.nama} ({pendaftar.prodi.jenjang}) ·{" "}
-              {LABEL_JALUR[pendaftar.jalurMasuk]}
-            </p>
+            <p className="text-[10px] font-bold uppercase tracking-widest opacity-60 mb-0.5">Status Saat Ini</p>
+            <p className="text-xl font-bold">{LABEL_STATUS[pendaftar.status]}</p>
           </div>
-          <div className="flex items-center gap-2">
-            <span className={cn("inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold", warnaClass)}>
-              <Icon className="h-4 w-4" />
-              {LABEL_STATUS[pendaftar.status]}
-            </span>
-          </div>
-        </div>
-
-        {pendaftar.status === "DOKUMEN_TIDAK_LENGKAP" && pendaftar.catatanVerifikasi && (
-          <div className="mt-4 rounded-lg bg-orange-50 border border-orange-200 p-3 text-sm text-orange-800">
-            <strong>Catatan Panitia:</strong> {pendaftar.catatanVerifikasi}
-          </div>
-        )}
-
-        {pendaftar.status === "DITOLAK" && pendaftar.catatanVerifikasi && (
-          <div className="mt-4 rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-800">
-            <strong>Alasan Penolakan:</strong> {pendaftar.catatanVerifikasi}
-          </div>
-        )}
-      </div>
-
-      {/* Quick actions */}
-      <div className="grid grid-cols-2 gap-3">
-        <Link href="/dokumen">
-          <div className="rounded-xl border border-border bg-white p-4 hover:border-[#1B4F72]/40 hover:bg-[#1B4F72]/5 transition-colors cursor-pointer group">
-            <FileText className="h-5 w-5 text-[#1B4F72] mb-2" />
-            <p className="font-medium text-sm">Dokumen Saya</p>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              {dokumenValid}/{dokumenTotal} dokumen valid
-            </p>
-          </div>
-        </Link>
-        <Link href="/kartu">
-          <div className="rounded-xl border border-border bg-white p-4 hover:border-[#1B4F72]/40 hover:bg-[#1B4F72]/5 transition-colors cursor-pointer group">
-            <CreditCard className="h-5 w-5 text-[#1B4F72] mb-2" />
-            <p className="font-medium text-sm">Kartu Pendaftaran</p>
-            <p className="text-xs text-muted-foreground mt-0.5">Lihat & cetak kartu</p>
-          </div>
-        </Link>
-      </div>
-
-      {/* Data ringkasan */}
-      <div className="rounded-xl bg-white border border-border shadow-sm overflow-hidden">
-        <div className="bg-muted/40 px-4 py-3 border-b border-border">
-          <p className="text-sm font-semibold text-[#1B4F72]">Informasi Pendaftaran</p>
-        </div>
-        <div className="divide-y divide-border">
-          <InfoRow label="Nama Lengkap" value={pendaftar.nama} />
-          <InfoRow label="NIK" value={pendaftar.nik} />
-          <InfoRow
-            label="Tanggal Lahir"
-            value={`${pendaftar.tempatLahir}, ${formatTanggal(pendaftar.tanggalLahir.toISOString())}`}
-          />
-          <InfoRow label="Program Studi" value={`${pendaftar.prodi.nama} (${pendaftar.prodi.jenjang})`} />
-          <InfoRow label="Jalur Masuk" value={LABEL_JALUR[pendaftar.jalurMasuk]} />
-          <InfoRow label="Periode" value={pendaftar.periode.nama} />
-          <InfoRow
-            label="Tanggal Daftar"
-            value={formatTanggal(pendaftar.createdAt.toISOString())}
-          />
         </div>
       </div>
 
-      {/* Timeline riwayat status */}
-      {pendaftar.riwayatStatus.length > 0 && (
-        <div className="rounded-xl bg-white border border-border shadow-sm overflow-hidden">
-          <div className="bg-muted/40 px-4 py-3 border-b border-border">
-            <p className="text-sm font-semibold text-[#1B4F72]">Riwayat Status</p>
-          </div>
-          <div className="px-4 py-3">
-            <div className="relative space-y-4">
-              {pendaftar.riwayatStatus.map((r, i) => {
-                const isLast = i === pendaftar.riwayatStatus.length - 1;
-                return (
-                  <div key={r.id} className="flex gap-3">
-                    <div className="flex flex-col items-center">
-                      <div
-                        className={cn(
-                          "h-3 w-3 rounded-full mt-0.5 shrink-0",
-                          isLast ? "bg-[#1B4F72]" : "bg-muted-foreground/30"
-                        )}
-                      />
-                      {!isLast && <div className="w-px flex-1 bg-muted-foreground/20 my-1" />}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        {/* LEFT COLUMN: PRIMARY INFO */}
+        <div className="lg:col-span-2 space-y-10">
+           
+           {/* ALERTS */}
+           {pendaftar.status === "DOKUMEN_TIDAK_LENGKAP" && (
+              <div className="bg-orange-500/10 border border-orange-500/30 rounded-[40px] p-8 flex items-start gap-6 shadow-2xl">
+                 <AlertCircle className="w-10 h-10 text-orange-400 shrink-0" />
+                 <div>
+                    <h4 className="text-xl text-white font-bold mb-2">Dokumen Butuh Perbaikan</h4>
+                    <p className="text-orange-200/80 font-light leading-relaxed mb-6">{pendaftar.catatanVerifikasi}</p>
+                    <Link href="/dokumen">
+                       <Button className="bg-orange-500 hover:bg-orange-600 text-white rounded-xl">Perbaiki Dokumen →</Button>
+                    </Link>
+                 </div>
+              </div>
+           )}
+
+           {/* SUMMARY CARDS */}
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-[#1C1A17] border border-[#2D2A26] rounded-[48px] p-10 hover:bg-[#2B2A23] transition-all group overflow-hidden relative">
+                 <div className="absolute top-0 right-0 w-32 h-32 bg-[#EAC956]/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl group-hover:scale-150 transition-transform" />
+                 <GraduationCap className="w-10 h-10 text-[#EAC956] mb-8" />
+                 <h4 className="text-[#6A685F] text-[10px] font-bold uppercase tracking-widest mb-2">Program Studi Pilihan</h4>
+                 <p className="text-2xl text-white font-normal mb-1">{pendaftar.prodi.nama}</p>
+                 <p className="text-sm text-[#EAC956] font-medium">{pendaftar.prodi.jenjang} · Gelombang {pendaftar.periode.nama}</p>
+              </div>
+
+              <div className="bg-[#1C1A17] border border-[#2D2A26] rounded-[48px] p-10 hover:bg-[#2B2A23] transition-all group overflow-hidden relative">
+                 <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl group-hover:scale-150 transition-transform" />
+                 <FileText className="w-10 h-10 text-blue-400 mb-8" />
+                 <h4 className="text-[#6A685F] text-[10px] font-bold uppercase tracking-widest mb-2">Progres Pemberkasan</h4>
+                 <p className="text-3xl text-white font-normal mb-2">{dokumenValid} <span className="text-lg text-[#6A685F]">/ {dokumenTotal}</span></p>
+                 <div className="w-full h-1.5 bg-[#2D2A26] rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-blue-500 transition-all duration-1000" 
+                      style={{ width: `${dokumenTotal > 0 ? (dokumenValid / dokumenTotal) * 100 : 0}%` }}
+                    />
+                 </div>
+              </div>
+           </div>
+
+           {/* DETAILED DATA */}
+           <div className="bg-[#1C1A17] border border-[#2D2A26] rounded-[56px] p-10 lg:p-16 relative overflow-hidden">
+              <div className="flex items-center gap-4 mb-12">
+                 <div className="w-12 h-12 bg-[#EAC956]/10 rounded-2xl flex items-center justify-center text-[#EAC956]">
+                    <User className="w-6 h-6" />
+                 </div>
+                 <h3 className="text-3xl text-white font-normal tracking-tight">Data Profil Registrasi</h3>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-10">
+                 <DetailField label="Nama Lengkap" value={pendaftar.nama} icon={<User className="w-4 h-4" />} />
+                 <DetailField label="Nomor Induk Kependudukan (NIK)" value={pendaftar.nik} icon={<Fingerprint className="w-4 h-4" />} />
+                 <DetailField label="Email Terdaftar" value={pendaftar.email} icon={<Mail className="w-4 h-4" />} />
+                 <DetailField label="Nomor WhatsApp" value={pendaftar.noHp} icon={<Phone className="w-4 h-4" />} />
+                 <DetailField label="Alamat Domisili" value={pendaftar.alamat} icon={<MapPin className="w-4 h-4" />} secondary={pendaftar.kota} />
+                 <DetailField label="Periode Pendaftaran" value={pendaftar.periode.nama} icon={<Calendar className="w-4 h-4" />} secondary={pendaftar.periode.tahunAjaran} />
+              </div>
+           </div>
+        </div>
+
+        {/* RIGHT COLUMN: TIMELINE & ACTIONS */}
+        <div className="space-y-8">
+           {/* QUICK ACTIONS */}
+           <div className="bg-[#EAC956] rounded-[48px] p-8 shadow-3xl">
+              <h4 className="text-[#3A2E00] text-xl font-bold mb-6 flex items-center gap-3">
+                 <ShieldCheck className="w-6 h-6" /> Langkah Selanjutnya
+              </h4>
+              <div className="space-y-4">
+                 <Link href="/dokumen" className="block p-5 bg-white/20 hover:bg-white/30 rounded-3xl border border-white/10 transition-all group">
+                    <div className="flex items-center justify-between text-[#3A2E00] font-bold">
+                       Lengkapi Dokumen
+                       <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </div>
-                    <div className="pb-1">
-                      <p className="text-sm font-medium">{LABEL_STATUS[r.statusBaru]}</p>
-                      {r.catatan && (
-                        <p className="text-xs text-muted-foreground mt-0.5">{r.catatan}</p>
-                      )}
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        {new Date(r.createdAt).toLocaleDateString("id-ID", {
-                          day: "numeric",
-                          month: "long",
-                          year: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </p>
+                    <p className="text-[#3A2E00]/60 text-xs mt-1">Upload berkas persyaratan Anda</p>
+                 </Link>
+                 <Link href="/kartu" className="block p-5 bg-white/20 hover:bg-white/30 rounded-3xl border border-white/10 transition-all group">
+                    <div className="flex items-center justify-between text-[#3A2E00] font-bold">
+                       Unduh Kartu
+                       <CreditCard className="w-5 h-5 group-hover:rotate-12 transition-transform" />
                     </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+                    <p className="text-[#3A2E00]/60 text-xs mt-1">Gunakan untuk seleksi & administrasi</p>
+                 </Link>
+              </div>
+           </div>
+
+           {/* TIMELINE */}
+           <div className="bg-[#1C1A17] border border-[#2D2A26] rounded-[48px] p-10">
+              <h4 className="text-white text-xl font-normal mb-10 flex items-center gap-3">
+                 <Clock className="w-6 h-6 text-[#EAC956]" /> Log Aktivitas
+              </h4>
+              <div className="space-y-10 relative">
+                 <div className="absolute left-[7px] top-2 bottom-2 w-0.5 bg-[#2D2A26]" />
+                 {pendaftar.riwayatStatus.map((r, i) => (
+                    <div key={r.id} className="relative pl-10">
+                       <div className={cn(
+                         "absolute left-0 top-1.5 w-4 h-4 rounded-full border-2 border-[#1C1A17] ring-4 ring-current/10 transition-all",
+                         i === 0 ? "bg-[#EAC956] scale-125" : "bg-[#6A685F]"
+                       )} />
+                       <p className={cn("text-base font-bold mb-1 transition-colors", i === 0 ? "text-[#EAC956]" : "text-white/60")}>
+                          {LABEL_STATUS[r.statusBaru]}
+                       </p>
+                       {r.catatan && <p className="text-xs text-[#D2CEBE] font-light mb-2">{r.catatan}</p>}
+                       <p className="text-[10px] font-bold text-[#6A685F] uppercase tracking-tighter">
+                          {new Date(r.createdAt).toLocaleDateString("id-ID", { day: 'numeric', month: 'short' })} · {new Date(r.createdAt).toLocaleTimeString("id-ID", { hour: '2-digit', minute: '2-digit' })}
+                       </p>
+                    </div>
+                 ))}
+              </div>
+           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }
 
-function InfoRow({ label, value }: { label: string; value: string }) {
+function DetailField({ label, value, icon, secondary }: { label: string; value: any, icon: React.ReactNode, secondary?: string }) {
   return (
-    <div className="flex items-start px-4 py-2.5 text-sm gap-4">
-      <span className="text-muted-foreground w-36 shrink-0">{label}</span>
-      <span className="font-medium">{value}</span>
+    <div className="group border-b border-[#2D2A26] pb-6 hover:border-[#EAC956]/30 transition-all">
+       <div className="flex items-center gap-2 mb-3 text-[#6A685F] group-hover:text-[#EAC956] transition-colors">
+          {icon}
+          <span className="text-[10px] font-bold text-[#6A685F] group-hover:text-[#EAC956] uppercase tracking-widest">{label}</span>
+       </div>
+       <p className="text-xl text-white font-light group-hover:pl-2 transition-all">{value || '-'}</p>
+       {secondary && <p className="text-xs text-[#6A685F] mt-1">{secondary}</p>}
     </div>
   );
 }

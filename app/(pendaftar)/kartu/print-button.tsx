@@ -7,11 +7,10 @@ export function PrintButton() {
   return (
     <Button
       onClick={() => window.print()}
-      variant="outline"
-      className="gap-2 border-[#1B4F72] text-[#1B4F72] hover:bg-[#1B4F72] hover:text-white"
+      className="gap-2 bg-[#EAC956] hover:bg-[#FCE68A] text-[#3A2E00] rounded-2xl px-6 h-12 font-bold shadow-2xl transition-all"
     >
-      <Printer className="h-4 w-4" />
-      Cetak Kartu
+      <Printer className="h-5 w-5" />
+      Cetak Kartu PDF
     </Button>
   );
 }

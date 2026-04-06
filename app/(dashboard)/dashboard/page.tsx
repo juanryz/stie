@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { LABEL_JALUR, LABEL_STATUS } from "@/types";
-import { Users, Clock, CheckCircle2, XCircle, TrendingUp } from "lucide-react";
+import { Users, Clock, CheckCircle2, XCircle, TrendingUp, LayoutDashboard } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { StatusPMB } from "@prisma/client";
 
@@ -58,97 +59,103 @@ export default async function DashboardPage() {
       label: "Total Pendaftar",
       value: totalPendaftar,
       icon: Users,
-      color: "bg-blue-50 text-blue-700 border-blue-200",
-      iconColor: "text-blue-500",
+      color: "text-[#EAC956]",
+      iconColor: "text-[#EAC956]",
     },
     {
       label: "Menunggu Verifikasi",
       value: statusMap.MENUNGGU_VERIFIKASI ?? 0,
       icon: Clock,
-      color: "bg-yellow-50 text-yellow-700 border-yellow-200",
-      iconColor: "text-yellow-500",
+      color: "text-yellow-400",
+      iconColor: "text-yellow-400",
     },
     {
       label: "Diterima",
       value: statusMap.DITERIMA ?? 0,
       icon: CheckCircle2,
-      color: "bg-green-50 text-green-700 border-green-200",
-      iconColor: "text-green-500",
+      color: "text-green-400",
+      iconColor: "text-green-400",
     },
     {
       label: "Ditolak",
       value: statusMap.DITOLAK ?? 0,
       icon: XCircle,
-      color: "bg-red-50 text-red-700 border-red-200",
-      iconColor: "text-red-500",
+      color: "text-red-400",
+      iconColor: "text-red-400",
     },
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="p-8 lg:p-12 space-y-12 max-w-[1600px] mx-auto">
       {/* Page header */}
-      <div>
-        <h1 className="text-2xl font-bold text-[#1B4F72]">Dashboard</h1>
-        {periodePMB && (
-          <p className="text-sm text-muted-foreground mt-0.5">
-            Periode aktif: <span className="font-medium text-[#1B4F72]">{periodePMB.nama}</span>
-          </p>
-        )}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+           <div className="flex items-center gap-3 mb-4 text-[#EAC956]">
+             <LayoutDashboard className="w-8 h-8" />
+             <span className="text-sm font-bold tracking-[0.2em] uppercase">Overview</span>
+           </div>
+           <h1 className="text-[44px] leading-none text-white font-normal tracking-tight mb-3">Dashboard Utama</h1>
+           {periodePMB && (
+             <p className="text-[#D2CEBE] font-light">
+               Periode Aktif: <span className="font-bold text-[#EAC956] ml-1 bg-[#EAC956]/10 px-3 py-1 rounded-full border border-[#EAC956]/20">{periodePMB.nama}</span>
+             </p>
+           )}
+        </div>
       </div>
 
       {/* Stat cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {statCards.map(({ label, value, icon: Icon, color, iconColor }) => (
           <div
             key={label}
-            className={cn("rounded-xl border p-4 bg-white shadow-sm", color)}
+            className="rounded-[32px] border border-[#2D2A26] p-8 bg-[#1C1A17] shadow-2xl relative overflow-hidden group hover:border-[#EAC956]/30 transition-all"
           >
-            <div className="flex items-start justify-between">
+            <div className="absolute top-0 right-0 w-20 h-20 bg-white/5 rounded-bl-[40px]" />
+            <div className="flex items-start justify-between relative z-10">
               <div>
-                <p className="text-xs font-medium opacity-80">{label}</p>
-                <p className="text-3xl font-bold mt-1">{value}</p>
+                <p className="text-xs font-bold text-[#6A685F] uppercase tracking-widest mb-2">{label}</p>
+                <p className="text-5xl font-light text-white group-hover:text-[#EAC956] transition-colors">{value}</p>
               </div>
-              <Icon className={cn("h-5 w-5 mt-1", iconColor)} />
+              <div className={cn("p-3 rounded-2xl bg-white/5 border border-white/5", iconColor)}>
+                <Icon className="h-6 w-6" />
+              </div>
             </div>
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
         {/* Kuota per Prodi */}
-        <div className="rounded-xl bg-white border border-border shadow-sm overflow-hidden">
-          <div className="px-5 py-3 border-b border-border bg-muted/30">
-            <p className="text-sm font-semibold text-[#1B4F72]">Kuota per Program Studi</p>
+        <div className="rounded-[40px] bg-[#1C1A17] border border-[#2D2A26] shadow-2xl overflow-hidden">
+          <div className="px-10 py-6 border-b border-[#2D2A26] bg-[#2B2A23]/30">
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#EAC956]">Kuota per Program Studi</p>
           </div>
-          <div className="p-5 space-y-4">
+          <div className="p-10 space-y-8">
             {prodiList.map((prodi) => {
               const terisi = prodi._count.pendaftar;
               const persen = Math.min(100, Math.round((terisi / prodi.kuota) * 100));
               return (
-                <div key={prodi.id}>
-                  <div className="flex items-center justify-between text-sm mb-1.5">
-                    <span className="font-medium">
-                      {prodi.kode} — {prodi.nama}
-                      <span className="ml-1 text-xs text-muted-foreground font-normal">
+                <div key={prodi.id} className="group">
+                  <div className="flex items-center justify-between text-base mb-3 transition-colors group-hover:text-[#EAC956]">
+                    <span className="font-medium text-white">
+                      {prodi.nama}
+                      <span className="ml-2 text-xs text-[#D2CEBE] font-light">
                         ({prodi.jenjang})
                       </span>
                     </span>
-                    <span className="text-muted-foreground text-xs">
-                      {terisi}/{prodi.kuota}
+                    <span className="text-[#D2CEBE] text-sm font-bold bg-[#2B2A23] px-3 py-1 rounded-lg">
+                      {terisi} / {prodi.kuota}
                     </span>
                   </div>
-                  <div className="h-2 rounded-full bg-muted overflow-hidden">
+                  <div className="h-2 rounded-full bg-[#33312A] overflow-hidden shadow-inner">
                     <div
                       className={cn(
-                        "h-full rounded-full transition-all",
-                        persen >= 90 ? "bg-red-500" : persen >= 70 ? "bg-yellow-500" : "bg-[#1B4F72]"
+                        "h-full rounded-full transition-all duration-1000",
+                        persen >= 90 ? "bg-red-500" : persen >= 70 ? "bg-[#EAC956]" : "bg-gradient-to-r from-[#EAC956] to-[#FCE68A]"
                       )}
                       style={{ width: `${persen}%` }}
                     />
                   </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {persen}% terisi · sisa {Math.max(0, prodi.kuota - terisi)} kursi
-                  </p>
                 </div>
               );
             })}
@@ -156,129 +163,85 @@ export default async function DashboardPage() {
         </div>
 
         {/* Per Jalur Masuk */}
-        <div className="rounded-xl bg-white border border-border shadow-sm overflow-hidden">
-          <div className="px-5 py-3 border-b border-border bg-muted/30">
-            <p className="text-sm font-semibold text-[#1B4F72]">Pendaftar per Jalur Masuk</p>
+        <div className="rounded-[40px] bg-[#1C1A17] border border-[#2D2A26] shadow-2xl overflow-hidden flex flex-col">
+          <div className="px-10 py-6 border-b border-[#2D2A26] bg-[#2B2A23]/30">
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#EAC956]">Pendaftar per Jalur</p>
           </div>
-          <div className="p-5 space-y-3">
+          <div className="p-10 flex-1 space-y-6">
             {perJalur.length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center py-4">Belum ada data.</p>
+              <p className="text-sm text-[#D2CEBE] text-center py-10 italic">Belum ada data pendaftar.</p>
             ) : (
               perJalur.map(({ jalurMasuk, _count }) => {
                 const persen = totalPendaftar > 0
                   ? Math.round((_count / totalPendaftar) * 100)
                   : 0;
                 return (
-                  <div key={jalurMasuk} className="flex items-center gap-3">
-                    <span className="text-sm font-medium w-28 shrink-0">
-                      {LABEL_JALUR[jalurMasuk]}
+                  <div key={jalurMasuk} className="flex items-center gap-6 group">
+                    <span className="text-sm font-medium text-white w-32 shrink-0 group-hover:text-[#EAC956] transition-colors">
+                      {LABEL_JALUR[jalurMasuk as keyof typeof LABEL_JALUR] || jalurMasuk}
                     </span>
-                    <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
+                    <div className="flex-1 h-1.5 rounded-full bg-[#2B2A23] overflow-hidden">
                       <div
-                        className="h-full rounded-full bg-[#1B4F72]/70"
+                        className="h-full rounded-full bg-[#EAC956] opacity-70"
                         style={{ width: `${persen}%` }}
                       />
                     </div>
-                    <span className="text-sm font-semibold w-8 text-right">{_count}</span>
+                    <span className="text-sm font-bold text-[#EAC956] w-10 text-right">{_count}</span>
                   </div>
                 );
               })
             )}
           </div>
 
-          {/* Status breakdown */}
-          <div className="px-5 pb-5">
-            <p className="text-xs font-semibold text-[#1B4F72] uppercase tracking-wide mb-3 mt-1">
-              Breakdown Status
-            </p>
-            <div className="grid grid-cols-2 gap-2">
-              {(
-                [
-                  "MENUNGGU_VERIFIKASI",
-                  "TERVERIFIKASI",
-                  "DITERIMA",
-                  "DITOLAK",
-                  "DOKUMEN_TIDAK_LENGKAP",
-                  "DAFTAR_ULANG",
-                ] as StatusPMB[]
-              ).map((s) => {
-                const count = statusMap[s] ?? 0;
-                if (count === 0) return null;
-                return (
-                  <div key={s} className="flex items-center justify-between rounded-md bg-muted/40 px-3 py-1.5">
-                    <span className="text-xs text-muted-foreground truncate pr-2">
-                      {LABEL_STATUS[s]}
-                    </span>
-                    <span className="text-xs font-bold shrink-0">{count}</span>
-                  </div>
-                );
-              })}
-            </div>
+          {/* Status breakdown grid */}
+          <div className="p-10 pt-0">
+             <div className="grid grid-cols-2 gap-3">
+                {Object.entries(statusMap).map(([status, count]) => (
+                   <div key={status} className="bg-[#2B2A23]/50 border border-[#2D2A26] rounded-2xl p-4 flex justify-between items-center group hover:bg-[#2B2A23] transition-colors">
+                      <span className="text-[10px] uppercase tracking-wider font-bold text-[#6A685F] group-hover:text-[#D2CEBE]">{LABEL_STATUS[status as keyof typeof LABEL_STATUS] || status.replace(/_/g, ' ')}</span>
+                      <span className="text-white font-bold">{count}</span>
+                   </div>
+                ))}
+             </div>
           </div>
         </div>
       </div>
 
-      {/* Pendaftar terbaru */}
-      <div className="rounded-xl bg-white border border-border shadow-sm overflow-hidden">
-        <div className="px-5 py-3 border-b border-border bg-muted/30 flex items-center justify-between">
-          <p className="text-sm font-semibold text-[#1B4F72]">Pendaftar Terbaru</p>
-          <a href="/pendaftar" className="text-xs text-[#1B4F72] hover:underline font-medium">
-            Lihat semua →
-          </a>
+      {/* Pendaftar terbaru table */}
+      <div className="rounded-[40px] bg-[#1C1A17] border border-[#2D2A26] shadow-2xl overflow-hidden">
+        <div className="px-10 py-6 border-b border-[#2D2A26] bg-[#2B2A23]/30 flex items-center justify-between">
+          <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#EAC956]">Pendaftar Terbaru</p>
+          <Link href="/pendaftar" className="text-xs text-[#EAC956] hover:underline font-bold tracking-widest uppercase">
+            Semua Data →
+          </Link>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border bg-muted/20">
-                <th className="text-left px-5 py-2.5 text-xs font-semibold text-muted-foreground">
-                  No. Pendaftaran
-                </th>
-                <th className="text-left px-5 py-2.5 text-xs font-semibold text-muted-foreground">
-                  Nama
-                </th>
-                <th className="text-left px-5 py-2.5 text-xs font-semibold text-muted-foreground hidden md:table-cell">
-                  Prodi
-                </th>
-                <th className="text-left px-5 py-2.5 text-xs font-semibold text-muted-foreground">
-                  Status
-                </th>
-                <th className="text-left px-5 py-2.5 text-xs font-semibold text-muted-foreground hidden lg:table-cell">
-                  Tanggal
-                </th>
+              <tr className="border-b border-[#2D2A26] bg-[#2B2A23]/20">
+                <th className="text-left px-10 py-5 text-xs font-bold uppercase tracking-[0.2em] text-[#6A685F]">ID</th>
+                <th className="text-left px-10 py-5 text-xs font-bold uppercase tracking-[0.2em] text-[#6A685F]">Nama Calon Mahasiswa</th>
+                <th className="text-left px-10 py-5 text-xs font-bold uppercase tracking-[0.2em] text-[#6A685F] hidden md:table-cell">Program Studi</th>
+                <th className="text-left px-10 py-5 text-xs font-bold uppercase tracking-[0.2em] text-[#6A685F]">Status PMB</th>
+                <th className="text-left px-10 py-5 text-xs font-bold uppercase tracking-[0.2em] text-[#6A685F] hidden lg:table-cell">Waktu Daftar</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-border">
-              {pendaftarTerbaru.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="px-5 py-8 text-center text-muted-foreground text-sm">
-                    Belum ada pendaftar.
+            <tbody className="divide-y divide-[#2D2A26]">
+              {pendaftarTerbaru.map((p) => (
+                <tr key={p.id} className="hover:bg-white/5 transition-all group">
+                  <td className="px-10 py-6 font-mono text-xs text-[#EAC956]">
+                    <Link href={`/pendaftar/${p.id}`} className="hover:underline">#{p.noPendaftaran}</Link>
+                  </td>
+                  <td className="px-10 py-6 font-medium text-white group-hover:text-[#EAC956] transition-colors">{p.nama}</td>
+                  <td className="px-10 py-6 text-[#D2CEBE] font-light hidden md:table-cell">{p.prodi.nama}</td>
+                  <td className="px-10 py-6">
+                    <StatusBadge status={p.status} />
+                  </td>
+                  <td className="px-10 py-6 text-[#6A685F] text-xs font-medium hidden lg:table-cell">
+                    {new Date(p.createdAt).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
                   </td>
                 </tr>
-              ) : (
-                pendaftarTerbaru.map((p) => (
-                  <tr key={p.id} className="hover:bg-muted/20 transition-colors">
-                    <td className="px-5 py-3 font-mono text-xs text-[#1B4F72]">
-                      <a href={`/pendaftar/${p.id}`} className="hover:underline">
-                        {p.noPendaftaran}
-                      </a>
-                    </td>
-                    <td className="px-5 py-3 font-medium">{p.nama}</td>
-                    <td className="px-5 py-3 text-muted-foreground hidden md:table-cell">
-                      {p.prodi.kode}
-                    </td>
-                    <td className="px-5 py-3">
-                      <StatusBadge status={p.status} />
-                    </td>
-                    <td className="px-5 py-3 text-muted-foreground text-xs hidden lg:table-cell">
-                      {new Date(p.createdAt).toLocaleDateString("id-ID", {
-                        day: "numeric",
-                        month: "short",
-                        year: "numeric",
-                      })}
-                    </td>
-                  </tr>
-                ))
-              )}
+              ))}
             </tbody>
           </table>
         </div>
@@ -289,21 +252,16 @@ export default async function DashboardPage() {
 
 function StatusBadge({ status }: { status: StatusPMB }) {
   const MAP: Partial<Record<StatusPMB, string>> = {
-    MENUNGGU_VERIFIKASI: "bg-yellow-100 text-yellow-800",
-    DOKUMEN_TIDAK_LENGKAP: "bg-orange-100 text-orange-800",
-    TERVERIFIKASI: "bg-blue-100 text-blue-800",
-    DITERIMA: "bg-green-100 text-green-800",
-    DITOLAK: "bg-red-100 text-red-800",
-    DAFTAR_ULANG: "bg-teal-100 text-teal-800",
+    MENUNGGU_VERIFIKASI: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20",
+    DOKUMEN_TIDAK_LENGKAP: "bg-orange-500/10 text-orange-500 border-orange-500/20",
+    TERVERIFIKASI: "bg-blue-500/10 text-blue-500 border-blue-500/20",
+    DITERIMA: "bg-green-500/10 text-green-500 border-green-500/20",
+    DITOLAK: "bg-red-500/10 text-red-500 border-red-500/20",
+    DAFTAR_ULANG: "bg-teal-500/10 text-teal-500 border-teal-500/20",
   };
   return (
-    <span
-      className={cn(
-        "inline-block px-2 py-0.5 rounded-full text-xs font-medium",
-        MAP[status] ?? "bg-muted text-muted-foreground"
-      )}
-    >
-      {LABEL_STATUS[status]}
+    <span className={cn("px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border", MAP[status] ?? "bg-white/5 text-white/50 border-white/10")}>
+      {LABEL_STATUS[status as keyof typeof LABEL_STATUS] || status.replace(/_/g, ' ')}
     </span>
   );
 }

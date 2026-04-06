@@ -1,84 +1,79 @@
-import { CheckIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+"use client";
 
-const STEPS = [
-  { no: 1, label: "Data Pribadi" },
-  { no: 2, label: "Pendidikan" },
-  { no: 3, label: "Orang Tua" },
-  { no: 4, label: "Program" },
-  { no: 5, label: "Dokumen" },
-  { no: 6, label: "Review" },
-];
+import React from "react";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { 
+  User, 
+  GraduationCap, 
+  Users, 
+  BookOpen, 
+  FileText, 
+  ShieldCheck,
+  Check
+} from "lucide-react";
 
 interface StepIndicatorProps {
   currentStep: number;
 }
 
+const STEPS = [
+  { id: 1, label: "Pribadi", icon: <User className="w-4 h-4" /> },
+  { id: 2, label: "Pendidikan", icon: <GraduationCap className="w-4 h-4" /> },
+  { id: 3, label: "Orang Tua", icon: <Users className="w-4 h-4" /> },
+  { id: 4, label: "Program", icon: <BookOpen className="w-4 h-4" /> },
+  { id: 5, label: "Dokumen", icon: <FileText className="w-4 h-4" /> },
+  { id: 6, label: "Review", icon: <ShieldCheck className="w-4 h-4" /> },
+];
+
 export function StepIndicator({ currentStep }: StepIndicatorProps) {
   return (
-    <div className="w-full">
-      {/* Mobile: text only */}
-      <p className="sm:hidden text-sm text-muted-foreground text-center mb-4">
-        Langkah {currentStep} dari {STEPS.length} —{" "}
-        <span className="font-medium text-[#1B4F72]">
-          {STEPS[currentStep - 1]?.label}
-        </span>
-      </p>
+    <div className="relative flex items-center justify-between px-2 sm:px-12 mb-16">
+      {/* Background Rail */}
+      <div className="absolute left-10 right-10 top-[22px] h-[2px] bg-[#2D2A26] -z-10" />
+      
+      {/* Active Progress Rail */}
+      <motion.div 
+        className="absolute left-10 top-[22px] h-[2px] bg-[#EAC956] -z-10 shadow-[0_0_15px_rgba(234,201,86,0.3)]"
+        initial={{ width: 0 }}
+        animate={{ width: `${((currentStep - 1) / (STEPS.length - 1)) * 100}%` }}
+        transition={{ type: "spring", damping: 30, stiffness: 100 }}
+      />
 
-      {/* Desktop: full stepper */}
-      <div className="hidden sm:flex items-center w-full">
-        {STEPS.map((step, i) => {
-          const isDone = currentStep > step.no;
-          const isActive = currentStep === step.no;
+      {STEPS.map((step) => {
+        const isCompleted = currentStep > step.id;
+        const isActive = currentStep === step.id;
 
-          return (
-            <div key={step.no} className="flex items-center flex-1 last:flex-none">
-              {/* Circle */}
-              <div className="flex flex-col items-center gap-1 shrink-0">
-                <div
-                  className={cn(
-                    "flex h-8 w-8 items-center justify-center rounded-full border-2 text-xs font-bold transition-colors",
-                    isDone &&
-                      "border-[#1B4F72] bg-[#1B4F72] text-white",
-                    isActive &&
-                      "border-[#1B4F72] bg-white text-[#1B4F72]",
-                    !isDone && !isActive &&
-                      "border-border bg-background text-muted-foreground"
-                  )}
-                >
-                  {isDone ? <CheckIcon className="h-4 w-4" /> : step.no}
-                </div>
-                <span
-                  className={cn(
-                    "text-xs font-medium whitespace-nowrap",
-                    isActive ? "text-[#1B4F72]" : "text-muted-foreground"
-                  )}
-                >
-                  {step.label}
-                </span>
-              </div>
-
-              {/* Connector line */}
-              {i < STEPS.length - 1 && (
-                <div
-                  className={cn(
-                    "h-0.5 flex-1 mx-2 mb-5 rounded-full transition-colors",
-                    isDone ? "bg-[#1B4F72]" : "bg-border"
-                  )}
-                />
-              )}
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Mobile: progress bar */}
-      <div className="sm:hidden h-1.5 w-full rounded-full bg-muted overflow-hidden">
-        <div
-          className="h-full rounded-full bg-[#1B4F72] transition-all duration-300"
-          style={{ width: `${((currentStep - 1) / (STEPS.length - 1)) * 100}%` }}
-        />
-      </div>
+        return (
+          <div key={step.id} className="flex flex-col items-center gap-4 relative group">
+            <motion.div 
+               animate={{ 
+                  scale: isActive ? 1.25 : 1,
+                  backgroundColor: isActive || isCompleted ? "#EAC956" : "#2B2A23",
+                  color: isActive || isCompleted ? "#3A2E00" : "#6A685F",
+                  borderColor: isActive ? "rgba(234,201,86,0.4)" : "transparent"
+               }}
+               className={cn(
+                  "w-12 h-12 rounded-2xl flex items-center justify-center border-4 transition-all duration-500 shadow-3xl",
+                  isActive ? "ring-8 ring-[#EAC956]/10" : ""
+               )}
+            >
+               {isCompleted ? (
+                 <Check className="w-6 h-6 stroke-[3px]" />
+               ) : (
+                 step.icon
+               )}
+            </motion.div>
+            
+            <span className={cn(
+               "text-[10px] font-bold uppercase tracking-widest transition-all absolute top-16 whitespace-nowrap",
+               isActive ? "text-white opacity-100 scale-110" : "text-[#6A685F] opacity-70 group-hover:opacity-100"
+            )}>
+               {step.label}
+            </span>
+          </div>
+        );
+      })}
     </div>
   );
 }

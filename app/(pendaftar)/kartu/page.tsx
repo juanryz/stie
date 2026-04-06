@@ -5,6 +5,17 @@ import { prisma } from "@/lib/prisma";
 import { LABEL_JALUR, LABEL_STATUS } from "@/types";
 import { formatTanggal } from "@/lib/utils";
 import { PrintButton } from "./print-button";
+import { 
+  CreditCard, 
+  Printer, 
+  ShieldCheck, 
+  Info, 
+  Fingerprint, 
+  GraduationCap, 
+  Calendar,
+  Sparkles
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Kartu Pendaftaran — PMB STIE Anindyaguna",
@@ -24,125 +35,127 @@ export default async function KartuPage() {
   const pendaftar = await getPendaftarFull(session.user.id);
   if (!pendaftar) redirect("/daftar");
 
+  // Fetch config for branding
+  const config = await (prisma as any).systemConfig.findFirst().catch(() => null);
+
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between print:hidden">
+    <div className="max-w-5xl mx-auto pb-32">
+       {/* HEADER */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 border-b border-[#2D2A26] pb-10 print:hidden">
         <div>
-          <h1 className="text-xl font-bold text-[#1B4F72]">Kartu Pendaftaran</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            Simpan atau cetak kartu pendaftaran Anda.
-          </p>
+          <div className="inline-flex items-center gap-3 bg-[#EAC956]/10 text-[#EAC956] px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-6 border border-[#EAC956]/20 ring-1 ring-[#EAC956]/10">
+            <CreditCard className="w-4 h-4" />
+            Kartu Identitas
+          </div>
+          <h1 className="text-5xl text-white font-normal tracking-tight">Kartu Pendaftaran</h1>
+          <p className="text-[#D2CEBE] font-light mt-2 italic">Gunakan kartu ini sebagai tanda pengenal resmi selama proses seleksi PMB.</p>
         </div>
+        
         <PrintButton />
       </div>
 
-      {/* Kartu — akan dicetak */}
-      <div
-        id="kartu-pendaftaran"
-        className="bg-white rounded-xl border-2 border-[#1B4F72] shadow-sm overflow-hidden print:border print:shadow-none print:rounded-none"
-      >
-        {/* Header kartu */}
-        <div className="bg-[#1B4F72] text-white px-6 py-4">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-xs uppercase tracking-widest text-white/70 font-medium">
-                Kartu Pendaftaran Mahasiswa Baru
-              </p>
-              <h2 className="text-xl font-bold mt-1">STIE Anindyaguna</h2>
-              <p className="text-sm text-white/80">Semarang</p>
+      {/* KARTU PREVIEW */}
+      <div className="relative group max-w-2xl mx-auto">
+         {/* Atmospheric Glow */}
+         <div className="absolute inset-0 bg-[#EAC956]/5 blur-[120px] rounded-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+         
+         <div
+            id="kartu-pendaftaran"
+            className="bg-[#1C1A17] border-2 border-[#2D2A26] rounded-[48px] overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.6)] relative z-10 print:border print:shadow-none print:rounded-none print:bg-white print:text-black"
+         >
+            {/* Header kartu */}
+            <div className="bg-[#EAC956] p-10 flex flex-col md:flex-row justify-between items-center gap-6 print:bg-gray-100 print:text-black">
+               <div className="flex items-center gap-6">
+                   <div className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-3xl flex items-center justify-center p-3 border border-white/30 overflow-hidden shadow-2xl">
+                      {config?.logoUrl ? (
+                         <img src={config.logoUrl} className="w-full h-full object-cover" />
+                      ) : (
+                         <GraduationCap className="w-10 h-10 text-[#3A2E00]" />
+                      )}
+                   </div>
+                   <div>
+                      <h2 className="text-3xl font-black text-[#3A2E00] uppercase tracking-tighter leading-none mb-1">{config?.namaInstansi || "STIE Anindyaguna"}</h2>
+                      <p className="text-xs font-bold text-[#3A2E00]/60 uppercase tracking-widest">Penerimaan Mahasiswa Baru</p>
+                   </div>
+               </div>
+               
+               <div className="text-center md:text-right">
+                  <div className="bg-black/10 px-4 py-2 rounded-2xl mb-2">
+                     <p className="text-[10px] font-bold text-[#3A2E00] uppercase tracking-widest opacity-60">ID Registrasi</p>
+                     <p className="text-2xl font-mono font-bold text-[#3A2E00] tracking-tighter">{pendaftar.noPendaftaran}</p>
+                  </div>
+               </div>
             </div>
-            <div className="text-right">
-              <p className="text-xs text-white/70">No. Pendaftaran</p>
-              <p className="font-mono font-bold text-lg tracking-wide">
-                {pendaftar.noPendaftaran}
-              </p>
+
+            {/* Status Strip */}
+            <div className="bg-black/20 px-10 py-3 border-b border-[#2D2A26] flex items-center justify-between">
+               <span className="text-[10px] font-bold text-[#EAC956] uppercase tracking-widest flex items-center gap-2">
+                  <ShieldCheck className="w-3.5 h-3.5" /> Terdaftar {LABEL_JALUR[pendaftar.jalurMasuk]}
+               </span>
+               <span className="text-xs font-bold text-white uppercase italic">TA {pendaftar.periode.tahunAjaran}</span>
             </div>
-          </div>
-        </div>
 
-        {/* Status strip */}
-        <div className="bg-[#EAF2F8] px-6 py-2 border-b border-[#1B4F72]/20 flex items-center justify-between">
-          <span className="text-xs text-[#1B4F72] font-medium uppercase tracking-wide">
-            Status
-          </span>
-          <span className="text-sm font-semibold text-[#1B4F72]">
-            {LABEL_STATUS[pendaftar.status]}
-          </span>
-        </div>
+            {/* Body kartu */}
+            <div className="p-10 lg:p-14 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
+               <KartuInfo label="Nama Pendaftar" value={pendaftar.nama} span />
+               <KartuInfo label="Identitas (NIK)" value={pendaftar.nik} />
+               <KartuInfo label="Jenis Kelamin" value={pendaftar.jenisKelamin === "LAKI_LAKI" ? "Laki-laki" : "Perempuan"} />
+               <KartuInfo label="Program Studi" value={pendaftar.prodi.nama} span />
+               
+               <div className="col-span-full border-t border-dashed border-[#2D2A26] py-2" />
+               
+               <KartuInfo label="Gelombang" value={pendaftar.periode.nama} />
+               <KartuInfo label="Tahun Lulus" value={String(pendaftar.tahunLulus)} />
+               <KartuInfo label="Asal Sekolah" value={pendaftar.asalSekolah} span />
+            </div>
 
-        {/* Body kartu */}
-        <div className="px-6 py-4 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-1">
-          <KartuRow label="Nama Lengkap" value={pendaftar.nama} span />
-          <KartuRow label="NIK" value={pendaftar.nik} />
-          <KartuRow label="Jenis Kelamin" value={pendaftar.jenisKelamin === "LAKI_LAKI" ? "Laki-laki" : "Perempuan"} />
-          <KartuRow
-            label="Tempat, Tgl Lahir"
-            value={`${pendaftar.tempatLahir}, ${formatTanggal(pendaftar.tanggalLahir.toISOString())}`}
-            span
-          />
-          <KartuRow label="Agama" value={pendaftar.agama} />
-          <KartuRow label="No. HP" value={pendaftar.noHp} />
-          <KartuRow label="Email" value={pendaftar.email} span />
-          <KartuRow
-            label="Alamat"
-            value={`${pendaftar.alamat}, ${pendaftar.kota}, ${pendaftar.provinsi}${pendaftar.kodePos ? " " + pendaftar.kodePos : ""}`}
-            span
-          />
-
-          <div className="col-span-full my-2 border-t border-dashed border-[#1B4F72]/20" />
-
-          <KartuRow label="Program Studi" value={`${pendaftar.prodi.nama} (${pendaftar.prodi.jenjang})`} span />
-          <KartuRow label="Jalur Masuk" value={LABEL_JALUR[pendaftar.jalurMasuk]} />
-          <KartuRow label="Periode PMB" value={pendaftar.periode.nama} />
-
-          <div className="col-span-full my-2 border-t border-dashed border-[#1B4F72]/20" />
-
-          <KartuRow label="Sekolah Asal" value={pendaftar.asalSekolah} span />
-          <KartuRow label="Jurusan" value={pendaftar.jurusanSekolah} />
-          <KartuRow label="Tahun Lulus" value={String(pendaftar.tahunLulus)} />
-          {pendaftar.nilaiRataRata !== null && (
-            <KartuRow label="Nilai Rata-rata" value={String(pendaftar.nilaiRataRata)} />
-          )}
-        </div>
-
-        {/* Footer kartu */}
-        <div className="bg-[#EAF2F8] px-6 py-3 border-t border-[#1B4F72]/20 flex items-center justify-between text-xs text-[#1B4F72]/70">
-          <span>
-            Tanggal Daftar:{" "}
-            {new Date(pendaftar.createdAt).toLocaleDateString("id-ID", {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            })}
-          </span>
-          <span>pmb.anindyaguna.ac.id</span>
-        </div>
+            {/* Footer kartu */}
+            <div className="bg-black/30 p-10 border-t border-[#2D2A26] flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden">
+               <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-[#2D2A26] rounded-xl flex items-center justify-center">
+                     <Sparkles className="w-6 h-6 text-[#EAC956]" />
+                  </div>
+                  <p className="text-xs text-[#D2CEBE] font-light leading-relaxed">Kartu ini diterbitkan secara otomatis oleh sistem PMB online STIE Anindyaguna.</p>
+               </div>
+               <div className="text-right shrink-0">
+                  <p className="text-[10px] font-bold text-[#6A685F] uppercase tracking-widest mb-1">Diterbitkan Pada</p>
+                  <p className="text-xs text-white font-bold">{new Date(pendaftar.createdAt).toLocaleDateString("id-ID", { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+               </div>
+            </div>
+         </div>
       </div>
 
-      <p className="text-xs text-muted-foreground text-center print:hidden">
-        Kartu ini sebagai bukti pendaftaran. Harap disimpan dan dibawa saat proses seleksi.
-      </p>
+      <div className="mt-16 bg-[#2B2A23]/30 border border-[#2D2A26] rounded-[48px] p-10 flex items-center gap-6 print:hidden">
+         <div className="w-16 h-16 bg-[#EAC956]/10 rounded-3xl flex items-center justify-center text-[#EAC956] shrink-0">
+            <Info className="w-8 h-8" />
+         </div>
+         <p className="text-sm text-[#D2CEBE] font-light leading-relaxed">
+            <strong>Catatan Penting:</strong> Harap simpan kartu ini dalam format PDF atau cetak pada kertas A4. Kartu ini wajib dibawa saat mengikuti seleksi wawancara atau verifikasi berkas fisik di kampus.
+         </p>
+      </div>
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        @media print {
+          .print\\:hidden { display: none !important; }
+          #kartu-pendaftaran { 
+            border: 1px solid #ddd !important; 
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            background: white !important;
+            color: black !important;
+          }
+          #kartu-pendaftaran * { color: black !important; }
+        }
+      `}} />
     </div>
   );
 }
 
-function KartuRow({
-  label,
-  value,
-  span,
-}: {
-  label: string;
-  value: string;
-  span?: boolean;
-}) {
+function KartuInfo({ label, value, span }: { label: string; value: string; span?: boolean }) {
   return (
-    <div className={cn("py-1.5", span ? "col-span-full sm:col-span-2" : "")}>
-      <p className="text-xs text-muted-foreground">{label}</p>
-      <p className="text-sm font-medium mt-0.5">{value}</p>
+    <div className={cn("space-y-1.5", span ? "col-span-full" : "col-span-1")}>
+      <p className="text-[10px] font-bold text-[#6A685F] uppercase tracking-widest transition-colors group-hover:text-[#EAC956]">{label}</p>
+      <p className="text-xl text-white font-light tracking-tight">{value}</p>
     </div>
   );
-}
-
-function cn(...classes: (string | undefined | false)[]) {
-  return classes.filter(Boolean).join(" ");
 }

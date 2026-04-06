@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { FormPendaftaran } from "./form-pendaftaran";
+import { GraduationCap, Sparkles } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Formulir Pendaftaran — PMB STIE Anindyaguna",
@@ -25,19 +26,30 @@ export default async function DaftarPage() {
   const prodiList = await getProdiList();
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
-      {/* Header */}
-      <div className="bg-[#1B4F72] text-white py-8">
-        <div className="max-w-2xl mx-auto px-4 sm:px-6">
-          <h1 className="text-2xl font-bold">Formulir Pendaftaran Mahasiswa Baru</h1>
-          <p className="text-white/70 mt-1 text-sm">
-            STIE Anindyaguna Semarang — Isi semua data dengan lengkap dan benar
-          </p>
+    <div className="max-w-6xl mx-auto pb-32">
+       {/* HEADER SECTION */}
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-16 gap-8 border-b border-[#2D2A26] pb-12">
+        <div className="space-y-4">
+           <div className="inline-flex items-center gap-3 bg-[#EAC956]/10 text-[#EAC956] px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest border border-[#EAC956]/20 ring-1 ring-[#EAC956]/10">
+             <Sparkles className="w-4 h-4" />
+             Registration Intake
+           </div>
+           <h1 className="text-6xl text-white font-normal tracking-tighter">Mulai Masa Depan Anda</h1>
+           <p className="text-xl text-[#D2CEBE] font-light italic">Isi data Anda secara bertahap dan rapi untuk bergabung ke STIE Anindyaguna.</p>
+        </div>
+
+        <div className="px-8 py-4 rounded-3xl border border-[#EAC956]/30 bg-[#EAC956]/10 text-[#EAC956] flex items-center gap-4 shadow-2xl transition-all">
+          <div className="w-12 h-12 rounded-2xl bg-current/10 flex items-center justify-center">
+            <GraduationCap className="w-6 h-6" />
+          </div>
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-widest opacity-60 mb-0.5">PMB Online</p>
+            <p className="text-xl font-bold">STIE Anindyaguna</p>
+          </div>
         </div>
       </div>
 
-      {/* Form */}
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
+      <div className="max-w-4xl mx-auto">
         <FormPendaftaran prodiList={prodiList} />
       </div>
     </div>
