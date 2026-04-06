@@ -3,13 +3,13 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
 }
 
 // ─── AUTH ────────────────────────────────────────────────────
 
 model User {
-  id            String    @id @default(cuid())
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
   email         String    @unique
   name          String?
   password      String?
@@ -31,17 +31,17 @@ enum Role {
 }
 
 model Account {
-  id                String  @id @default(cuid())
-  userId            String
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -49,14 +49,15 @@ model Account {
 }
 
 model Session {
-  id           String   @id @default(cuid())
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
   sessionToken String   @unique
-  userId       String
+  userId       String   @db.ObjectId
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
   identifier String
   token      String   @unique
   expires    DateTime
@@ -67,7 +68,7 @@ model VerificationToken {
 // ─── REFERENSI ────────────────────────────────────────────────
 
 model ProgramStudi {
-  id        String      @id @default(cuid())
+  id        String      @id @default(auto()) @map("_id") @db.ObjectId
   kode      String      @unique
   nama      String
   jenjang   Jenjang
@@ -83,7 +84,7 @@ enum Jenjang {
 }
 
 model PeriodePMB {
-  id           String      @id @default(cuid())
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
   nama         String
   tahunAjaran  String
   tanggalBuka  DateTime
@@ -95,11 +96,11 @@ model PeriodePMB {
 // ─── PENDAFTAR ────────────────────────────────────────────────
 
 model Pendaftar {
-  id            String     @id @default(cuid())
+  id            String     @id @default(auto()) @map("_id") @db.ObjectId
   noPendaftaran String     @unique
-  userId        String     @unique
-  periodeId     String
-  prodiId       String
+  userId        String     @unique @db.ObjectId
+  periodeId     String     @db.ObjectId
+  prodiId       String     @db.ObjectId
   jalurMasuk    JalurMasuk @default(REGULER)
   status        StatusPMB  @default(MENUNGGU_VERIFIKASI)
 
@@ -121,7 +122,7 @@ model Pendaftar {
   asalSekolah    String
   jurusanSekolah String
   tahunLulus     Int
-  nilaiRataRata  Decimal? @db.Decimal(4, 2)
+  nilaiRataRata  Float?
 
   // Data Orang Tua
   namaAyah      String?
@@ -169,8 +170,8 @@ enum StatusPMB {
 }
 
 model RiwayatStatus {
-  id          String     @id @default(cuid())
-  pendaftarId String
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  pendaftarId String     @db.ObjectId
   statusLama  StatusPMB?
   statusBaru  StatusPMB
   catatan     String?
@@ -180,8 +181,8 @@ model RiwayatStatus {
 }
 
 model Dokumen {
-  id          String        @id @default(cuid())
-  pendaftarId String
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  pendaftarId String        @db.ObjectId
   jenis       JenisDokumen
   namaFile    String
   urlFile     String

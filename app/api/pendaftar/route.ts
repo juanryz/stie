@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { uploadFile } from "@/lib/supabase";
+import { uploadFile } from "@/lib/storage";
 import { submitPendaftaranSchema } from "@/lib/validations/pendaftaran";
 import { sendKonfirmasiPendaftaran } from "@/lib/email";
 import type { JenisDokumen } from "@prisma/client";

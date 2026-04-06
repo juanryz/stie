@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getSignedUrl } from "@/lib/supabase";
+import { getSignedUrl } from "@/lib/storage";
 import { LABEL_DOKUMEN } from "@/types";
 import {
   CheckCircle2,

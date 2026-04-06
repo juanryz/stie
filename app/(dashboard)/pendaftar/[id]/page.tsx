@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { LABEL_STATUS, LABEL_JALUR, LABEL_DOKUMEN, WARNA_STATUS } from "@/types";
-import { getSignedUrl } from "@/lib/supabase";
+import { getSignedUrl } from "@/lib/storage";
 import { formatTanggal } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import { ArrowLeft, ExternalLink, CheckCircle2, Clock, XCircle } from "lucide-react";

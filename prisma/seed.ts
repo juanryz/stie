@@ -1,36 +1,30 @@
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
 import { hash } from "bcryptjs";
 
-// Prisma v7 butuh driver adapter — ts-node tidak load prisma.config.ts
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
-const prisma = new PrismaClient({ adapter });
+// Prisma v7 automatically loads datasource from prisma.config.ts 
+// or constructor if not provided (but here we can just use process.env.DATABASE_URL
+// via constructor arg or leave empty if it automatically picks it up).
+const prisma = new PrismaClient();
 
 async function main() {
   console.log("🌱 Seeding database...");
 
   // ─── Program Studi ────────────────────────────────────────────
-  const programStudi = await prisma.programStudi.createMany({
-    data: [
-      {
-        kode: "MNJ",
-        nama: "S1 Manajemen",
-        jenjang: "S1",
-        kuota: 150,
-        aktif: true,
-      },
-      {
-        kode: "AKT",
-        nama: "S1 Akuntansi",
-        jenjang: "S1",
-        kuota: 120,
-        aktif: true,
-      },
-    ],
-    skipDuplicates: true,
-  });
-  console.log(`✅ Program Studi: ${programStudi.count} dibuat`);
+  const prodiMnj = await prisma.programStudi.findUnique({ where: { kode: "MNJ" } });
+  if (!prodiMnj) {
+    await prisma.programStudi.create({
+      data: { kode: "MNJ", nama: "S1 Manajemen", jenjang: "S1", kuota: 150, aktif: true },
+    });
+  }
+
+  const prodiAkt = await prisma.programStudi.findUnique({ where: { kode: "AKT" } });
+  if (!prodiAkt) {
+    await prisma.programStudi.create({
+      data: { kode: "AKT", nama: "S1 Akuntansi", jenjang: "S1", kuota: 120, aktif: true },
+    });
+  }
+  console.log(`✅ Program Studi dibuat`);
 
   // ─── Periode PMB ──────────────────────────────────────────────
   const periodeExisting = await prisma.periodePMB.findFirst({
