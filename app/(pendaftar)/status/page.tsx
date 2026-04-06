@@ -85,9 +85,9 @@ export default async function StatusPage() {
              Nomor Registrasi: {pendaftar.noPendaftaran}
            </div>
            <h1 className="text-7xl md:text-8xl text-white font-normal tracking-tighter mb-4 flex items-center gap-4">
-              Halo, <span className="text-[#EAC956] drop-shadow-[0_0_15px_rgba(234,201,86,0.2)]">{pendaftar.nama.split(' ')[0]}</span>! <span className="animate-wave origin-bottom-right inline-block">👋</span>
+              Selamat Datang, <span className="text-[#EAC956] drop-shadow-[0_0_15px_rgba(234,201,86,0.2)]">{pendaftar.nama.split(' ')[0]}</span>! <span className="animate-wave origin-bottom-right inline-block">👋</span>
            </h1>
-           <p className="text-2xl text-[#D2CEBE] font-light italic opacity-80 decoration-[#EAC956]/20 underline decoration-2 underline-offset-8">Selamat datang kembali di portal pendaftaran Anda.</p>
+           <p className="text-2xl text-[#D2CEBE] font-light italic opacity-80 decoration-[#EAC956]/20 underline decoration-2 underline-offset-8">Anda telah login sebagai pendaftar di portal STIE Anindyaguna.</p>
         </div>
 
         <div className={cn(

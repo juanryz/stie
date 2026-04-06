@@ -24,10 +24,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useSession, signOut } from "next-auth/react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function UnifiedSettingsPage() {
   const { data: session, status } = useSession();
+  const router = useRouter();
   const isAdmin = session?.user?.role === "ADMIN" || session?.user?.role === "SUPER_ADMIN";
   
   const [activeTab, setActiveTab] = useState("Profil");
@@ -44,14 +45,16 @@ export default function UnifiedSettingsPage() {
 
   useEffect(() => {
     if (status === "unauthenticated") {
-       redirect("/login");
+       router.push("/login");
     }
-    if (isAdmin) {
-       fetchSettings();
-    } else {
-       setLoading(false);
+    if (status === "authenticated") {
+       if (isAdmin) {
+          fetchSettings();
+       } else {
+          setLoading(false);
+       }
     }
-  }, [status, isAdmin]);
+  }, [status, isAdmin, router]);
 
   const fetchSettings = async () => {
     try {
@@ -96,7 +99,11 @@ export default function UnifiedSettingsPage() {
     }
   };
 
-  if (loading) return null;
+  if (loading || status === "loading") return (
+     <div className="h-full w-full flex items-center justify-center">
+        <Loader2 className="w-10 h-10 animate-spin text-[#EAC956]" />
+     </div>
+  );
 
   // RENDER PENDAFTAR VIEW
   if (!isAdmin) {
@@ -117,7 +124,7 @@ export default function UnifiedSettingsPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             <div className="space-y-4 col-span-1">
                 <button className="w-full flex items-center gap-4 bg-[#EAC956] text-[#3A2E00] px-8 py-5 rounded-[32px] font-bold shadow-2xl">
-                  <User className="w-6 h-6" /> Informasi Akun
+                   <User className="w-6 h-6" /> Informasi Akun
                 </button>
             </div>
 

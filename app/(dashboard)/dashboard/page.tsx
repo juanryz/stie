@@ -5,9 +5,10 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 
 import { LABEL_JALUR, LABEL_STATUS } from "@/types";
-import { Users, Clock, CheckCircle2, XCircle, TrendingUp, LayoutDashboard } from "lucide-react";
+import { Users, Clock, CheckCircle2, XCircle, TrendingUp, LayoutDashboard, BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { StatusPMB } from "@prisma/client";
+import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
   title: "Dashboard — PMB STIE Anindyaguna",
@@ -92,18 +93,24 @@ export default async function DashboardPage() {
     <div className="p-8 lg:p-12 space-y-12 max-w-[1600px] mx-auto">
       {/* Page header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
-           <div className="flex items-center gap-3 mb-4 text-[#EAC956]">
+        <div className="space-y-4">
+           <div className="flex items-center gap-3 mb-2 text-[#EAC956]">
              <LayoutDashboard className="w-8 h-8" />
              <span className="text-sm font-bold tracking-[0.2em] uppercase">Overview</span>
            </div>
-           <h1 className="text-[44px] leading-none text-white font-normal tracking-tight mb-3">Dashboard Utama</h1>
+           <h1 className="text-[44px] leading-none text-white font-normal tracking-tight mb-3 uppercase">Dashboard Utama</h1>
            {periodePMB && (
              <p className="text-[#D2CEBE] font-light">
                Periode Aktif: <span className="font-bold text-[#EAC956] ml-1 bg-[#EAC956]/10 px-3 py-1 rounded-full border border-[#EAC956]/20">{periodePMB.nama}</span>
              </p>
            )}
         </div>
+
+        <Link href="/prodi">
+           <Button className="bg-[#EAC956] hover:bg-[#FCE68A] text-[#3A2E00] h-16 px-10 rounded-3xl font-bold text-lg shadow-3xl hover:scale-105 transition-all flex items-center gap-3 group">
+             <BookOpen className="w-6 h-6 group-hover:scale-110 transition-transform" /> Kelola Program Studi
+           </Button>
+        </Link>
       </div>
 
       {/* Stat cards */}

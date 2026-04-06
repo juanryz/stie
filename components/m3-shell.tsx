@@ -66,16 +66,6 @@ export function M3Shell({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
-  useEffect(() => {
-    if (pathname === "/login" || pathname === "/register") {
-      setActiveSection(pathname.substring(1));
-    } else if (pathname.includes("/dashboard")) {
-      setActiveSection("dashboard");
-    } else if (pathname === "/") {
-      setActiveSection("home");
-    }
-  }, [pathname]);
-
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     if (pathname !== "/") return;
     const container = e.currentTarget;
@@ -100,33 +90,45 @@ export function M3Shell({ children }: { children: React.ReactNode }) {
   const isAdmin = session?.user?.role === "ADMIN" || session?.user?.role === "SUPER_ADMIN";
 
   const getLinks = () => {
-    // Only show Dashboard links if we're NOT on the landing page
-    if (status === "authenticated" && pathname !== "/") {
+    const isAuth = status === "authenticated";
+    
+    // Auth & Not Landing -> Internal Dashboard Sidebar
+    if (isAuth && pathname !== "/") {
        if (isAdmin) {
-         return [
-            { icon: <LayoutDashboard />, label: "Dasbor", path: "/dashboard", hash: "dashboard" },
-            { icon: <Users />, label: "Pendaftar", path: "/pendaftar", hash: "pendaftar" },
-            { icon: <ShieldCheck />, label: "Verifikasi", path: "/verifikasi", hash: "verifikasi" },
-            { icon: <BarChart3 />, label: "Laporan", path: "/laporan", hash: "laporan" },
-            { icon: <Megaphone />, label: "Info", path: "/pengumuman", hash: "pengumuman" },
-         ];
+          return [
+             { icon: <LayoutDashboard />, label: "Dasbor", path: "/dashboard", hash: "dashboard" },
+             { icon: <BookOpen />, label: "Prodi", path: "/prodi", hash: "prodi" },
+             { icon: <Users />, label: "Pendaftar", path: "/pendaftar", hash: "pendaftar" },
+             { icon: <ShieldCheck />, label: "Verifikasi", path: "/verifikasi", hash: "verifikasi" },
+             { icon: <BarChart3 />, label: "Laporan", path: "/laporan", hash: "laporan" },
+             { icon: <Megaphone />, label: "Info", path: "/pengumuman", hash: "pengumuman" },
+          ];
        } else {
-         return [
-            { icon: <Clock />, label: "Status", path: "/status", hash: "status" },
-            { icon: <FileText />, label: "Dokumen", path: "/dokumen", hash: "dokumen" },
-            { icon: <CreditCard />, label: "Kartu", path: "/kartu", hash: "kartu" },
-            { icon: <Home />, label: "Beranda", path: "/", hash: "home" },
-         ];
+          return [
+             { icon: <Clock />, label: "Status", path: "/status", hash: "status" },
+             { icon: <FileText />, label: "Dokumen", path: "/dokumen", hash: "dokumen" },
+             { icon: <CreditCard />, label: "Kartu", path: "/kartu", hash: "kartu" },
+             { icon: <Home />, label: "Beranda", path: "/", hash: "home" },
+          ];
        }
     }
     
-    // PUBLIC LINKS / LANDING PAGE
-    return [
+    // LANDING PAGE LINKS (Include Dashboard/Status shortcut if auth)
+    const baseLinks = [
       { icon: <Home />, label: "Beranda", path: "/", hash: "home" },
       { icon: <BookOpen />, label: "Prodi", path: "/#prodi", hash: "prodi" },
       { icon: <Layers />, label: "Jalur", path: "/#jalur", hash: "jalur" },
       { icon: <Megaphone />, label: "Info", path: "/#informasi", hash: "informasi" },
     ];
+
+    if (isAuth && pathname === "/") {
+       const shortcut = isAdmin 
+         ? { icon: <LayoutDashboard />, label: "Dasbor", path: "/dashboard", hash: "dashboard" }
+         : { icon: <Clock />, label: "Status", path: "/status", hash: "status" };
+       return [shortcut, ...baseLinks];
+    }
+
+    return baseLinks;
   };
 
   const links = getLinks();
@@ -139,12 +141,16 @@ export function M3Shell({ children }: { children: React.ReactNode }) {
     } else {
        // Map current path to a hash if possible
        if (pathname.includes("dashboard")) setActiveSection("dashboard");
+       else if (pathname.includes("prodi")) setActiveSection("prodi");
        else if (pathname.includes("pendaftar")) setActiveSection("pendaftar");
        else if (pathname.includes("verifikasi")) setActiveSection("verifikasi");
        else if (pathname.includes("status")) setActiveSection("status");
        else if (pathname.includes("dokumen")) setActiveSection("dokumen");
        else if (pathname.includes("kartu")) setActiveSection("kartu");
+       else if (pathname.includes("settings")) setActiveSection("settings");
        else if (pathname === "/") setActiveSection("home");
+       else if (pathname === "/login") setActiveSection("login");
+       else if (pathname === "/register") setActiveSection("register");
     }
   }, [pathname]);
 
@@ -159,19 +165,19 @@ export function M3Shell({ children }: { children: React.ReactNode }) {
       <div className="md:hidden flex items-center justify-between p-4 bg-[#111111]/80 backdrop-blur-xl border-b border-white/5 z-50">
          <div className="flex items-center gap-3">
             <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(true)} className="hover:bg-white/5 text-[#EAC956] rounded-xl"><Menu className="w-6 h-6" /></Button>
-            <div className="flex items-center gap-2">
+            <Link href="/" onClick={() => setActiveSection("home")} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
               <div className="bg-[#EAC956] p-1.5 rounded-lg shrink-0">
                 {config?.logoUrl ? <img src={config.logoUrl} className="w-5 h-5 object-cover rounded" /> : <GraduationCap className="w-5 h-5 text-[#3A2E00]" />}
               </div>
               <span className="font-bold text-[#F8F6F1] tracking-tight truncate max-w-[120px]">{config?.namaInstansi || "STIE PMB"}</span>
-            </div>
+            </Link>
          </div>
       </div>
 
       {/* M3 NAVIGATION RAIL (DESKTOP) */}
       <nav className="hidden md:flex flex-col w-[100px] h-screen py-10 items-center justify-between bg-[#111111] shrink-0 border-r border-[#2D2A26] z-50 relative">
-        <div className="flex flex-col items-center">
-            <div className="bg-[#EAC956]/10 text-[#EAC956] p-1 rounded-2xl mb-2 ring-1 ring-[#EAC956]/20 hover:scale-105 transition-all w-16 h-16 flex items-center justify-center overflow-hidden">
+        <div onClick={() => navigateTo("/", "home")} className="flex flex-col items-center group/logo hover:opacity-80 transition-opacity cursor-pointer">
+            <div className="bg-[#EAC956]/10 text-[#EAC956] p-1 rounded-2xl mb-2 ring-1 ring-[#EAC956]/20 group-hover/logo:scale-110 transition-all w-16 h-16 flex items-center justify-center overflow-hidden">
                {config?.logoUrl ? <img src={config.logoUrl} className="w-full h-full object-cover" /> : <GraduationCap className="w-8 h-8" />}
             </div>
             <div className="text-[10px] font-bold text-[#EAC956] tracking-tighter uppercase px-2 text-center leading-none mt-1">
@@ -190,7 +196,13 @@ export function M3Shell({ children }: { children: React.ReactNode }) {
         <div className="flex flex-col gap-6 mb-4">
            {status === "authenticated" ? (
              <>
-               <Link href="/settings" onClick={() => setActiveSection("settings")}><NavItem icon={<Settings />} label="Setelan" active={activeSection === "settings"} /></Link>
+               <div onClick={() => navigateTo("/settings", "settings")}>
+                 <NavItem 
+                    icon={isAdmin ? <Settings /> : <UserCircle2 />} 
+                    label={isAdmin ? "Setelan" : "Profil"} 
+                    active={activeSection === "settings"} 
+                 />
+               </div>
                <button onClick={() => signOut({ callbackUrl: "/" })} className="flex flex-col items-center gap-1.5 cursor-pointer group relative">
                   <div className="w-16 h-8 rounded-full flex items-center justify-center text-[#D2CEBE] group-hover:bg-red-500/10 group-hover:text-red-500 transition-all duration-300"><LogOut className="w-6 h-6" /></div>
                   <span className="text-[10px] font-bold tracking-widest text-[#6A685F] group-hover:text-red-500 uppercase">Keluar</span>
@@ -221,24 +233,34 @@ export function M3Shell({ children }: { children: React.ReactNode }) {
              <div className="flex flex-col gap-8 text-[32px] font-normal tracking-tight text-[#D2CEBE]">
                {links.map((item, idx) => (
                  <motion.div key={item.hash} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.1 }}>
-                   <Link href={item.path} onClick={() => setMobileMenuOpen(false)} className="hover:text-[#EAC956] transition-colors flex items-center justify-between group">
+                   <div onClick={() => { setMobileMenuOpen(false); navigateTo(item.path, item.hash); }} className="hover:text-[#EAC956] transition-colors flex items-center justify-between group cursor-pointer">
                      {item.label}
                      <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-[#EAC956] group-hover:border-[#EAC956] group-hover:text-[#3A2E00] transition-all">
                         {React.cloneElement(item.icon as any, { className: 'w-5 h-5' })}
                      </div>
-                   </Link>
+                   </div>
                  </motion.div>
                ))}
                
                {status === "authenticated" ? (
-                 <motion.button initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 }} onClick={() => signOut({ callbackUrl: "/" })} className="flex items-center justify-between text-red-400 font-bold hover:text-red-300 transition-colors pt-4 border-t border-white/5">
-                    Keluar Sesi <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center"><LogOut className="w-5 h-5" /></div>
-                 </motion.button>
+                 <div className="flex flex-col gap-8 pt-4 border-t border-white/5">
+                   <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }}>
+                     <div onClick={() => { setMobileMenuOpen(false); navigateTo("/settings", "settings"); }} className="hover:text-[#EAC956] transition-colors flex items-center justify-between group cursor-pointer">
+                       {isAdmin ? "Setelan" : "Profil Saya"}
+                       <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-[#EAC956] group-hover:border-[#EAC956] group-hover:text-[#3A2E00] transition-all">
+                          {isAdmin ? <Settings className="w-5 h-5"/> : <UserCircle2 className="w-5 h-5"/>}
+                       </div>
+                     </div>
+                   </motion.div>
+                   <motion.button initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 }} onClick={() => signOut({ callbackUrl: "/" })} className="flex items-center justify-between text-red-400 font-bold hover:text-red-300 transition-colors">
+                      Keluar Sesi <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center"><LogOut className="w-5 h-5" /></div>
+                   </motion.button>
+                 </div>
                ) : (
                  <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }}>
-                   <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="flex items-center justify-between text-[#EAC956] font-bold">
+                   <div onClick={() => { setMobileMenuOpen(false); navigateTo("/login", "login"); }} className="flex items-center justify-between text-[#EAC956] font-bold cursor-pointer">
                       Login Admin <div className="w-10 h-10 rounded-full border border-[#EAC956] flex items-center justify-center"><UserCircle2 className="w-5 h-5" /></div>
-                   </Link>
+                   </div>
                  </motion.div>
                )}
              </div>
