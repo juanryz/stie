@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Settings,
   User,
+  Lock,
   Globe,
   ShieldCheck,
   Save,
