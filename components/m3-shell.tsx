@@ -105,7 +105,7 @@ export function M3Shell({ children }: { children: React.ReactNode }) {
           ];
        } else {
           return [
-             { icon: <Clock />, label: "Status", path: "/status", hash: "status" },
+             { icon: <Clock />, label: "Dashboard", path: "/status", hash: "status" }, // changed Status to Dashboard
              { icon: <FileText />, label: "Dokumen", path: "/dokumen", hash: "dokumen" },
              { icon: <CreditCard />, label: "Kartu", path: "/kartu", hash: "kartu" },
              { icon: <Home />, label: "Beranda", path: "/", hash: "home" },
@@ -124,7 +124,7 @@ export function M3Shell({ children }: { children: React.ReactNode }) {
     if (isAuth && pathname === "/") {
        const shortcut = isAdmin 
          ? { icon: <LayoutDashboard />, label: "Dasbor", path: "/dashboard", hash: "dashboard" }
-         : { icon: <Clock />, label: "Status", path: "/status", hash: "status" };
+         : { icon: <Clock />, label: "Dashboard", path: "/status", hash: "status" }; // changed Status to Dashboard
        return [shortcut, ...baseLinks];
     }
 
@@ -165,12 +165,12 @@ export function M3Shell({ children }: { children: React.ReactNode }) {
       <div className="md:hidden flex items-center justify-between p-4 bg-[#111111]/80 backdrop-blur-xl border-b border-white/5 z-50">
          <div className="flex items-center gap-3">
             <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(true)} className="hover:bg-white/5 text-[#EAC956] rounded-xl"><Menu className="w-6 h-6" /></Button>
-            <Link href="/" onClick={() => setActiveSection("home")} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <div onClick={() => navigateTo("/", "home")} className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer">
               <div className="bg-[#EAC956] p-1.5 rounded-lg shrink-0">
                 {config?.logoUrl ? <img src={config.logoUrl} className="w-5 h-5 object-cover rounded" /> : <GraduationCap className="w-5 h-5 text-[#3A2E00]" />}
               </div>
               <span className="font-bold text-[#F8F6F1] tracking-tight truncate max-w-[120px]">{config?.namaInstansi || "STIE PMB"}</span>
-            </Link>
+            </div>
          </div>
       </div>
 
@@ -199,7 +199,7 @@ export function M3Shell({ children }: { children: React.ReactNode }) {
                <div onClick={() => navigateTo("/settings", "settings")}>
                  <NavItem 
                     icon={isAdmin ? <Settings /> : <UserCircle2 />} 
-                    label={isAdmin ? "Setelan" : "Profil"} 
+                    label={isAdmin ? "Setelan" : "Profil Saya"} // Added 'Saya' to distinguish
                     active={activeSection === "settings"} 
                  />
                </div>
