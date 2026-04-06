@@ -1,11 +1,9 @@
-import { Resend } from "resend";
 import { render } from "@react-email/components";
+import { getResend } from "@/lib/resend";
 import { KonfirmasiPendaftaran } from "@/emails/konfirmasi-pendaftaran";
 import { UpdateStatus } from "@/emails/update-status";
 import { LABEL_STATUS, LABEL_JALUR } from "@/types";
 import type { StatusPMB, JalurMasuk } from "@prisma/client";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 const FROM =
   process.env.EMAIL_FROM ?? "PMB STIE Anindyaguna <noreply@pmb.anindyaguna.ac.id>";
@@ -38,7 +36,7 @@ export async function sendKonfirmasiPendaftaran(params: {
     })
   );
 
-  const { error } = await resend.emails.send({
+  const { error } = await getResend().emails.send({
     from: FROM,
     to: params.to,
     subject: `Konfirmasi Pendaftaran — ${params.noPendaftaran}`,
@@ -69,7 +67,7 @@ export async function sendUpdateStatus(params: {
     })
   );
 
-  const { error } = await resend.emails.send({
+  const { error } = await getResend().emails.send({
     from: FROM,
     to: params.to,
     subject: `Update Status Pendaftaran — ${LABEL_STATUS[params.statusBaru]}`,
