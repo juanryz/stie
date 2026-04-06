@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { StatusDokumen } from "@prisma/client";
+import { ReuploadButton } from "./reupload-button";
 
 export const metadata: Metadata = {
   title: "Dokumen Saya — PMB STIE Anindyaguna",
@@ -138,17 +139,22 @@ export default async function DokumenPage() {
                          Uploaded {new Date(dok.uploadedAt).toLocaleDateString("id-ID", { day: 'numeric', month: 'short' })}
                       </span>
                       
-                      {dok.signedUrl && (
-                        <a
-                          href={dok.signedUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                           <Button variant="ghost" className="text-[#EAC956] hover:bg-[#EAC956] hover:text-[#3A2E00] rounded-xl h-10 px-4 flex items-center gap-2 group/btn transition-all">
-                              Lihat Berkas <ExternalLink className="w-4 h-4 group-hover/btn:rotate-12 transition-transform" />
-                           </Button>
-                        </a>
-                      )}
+                      <div className="flex gap-3">
+                         {dok.status !== "VALID" && (
+                           <ReuploadButton dokumenId={dok.id} jenis={dok.jenis} />
+                         )}
+                         {dok.signedUrl && (
+                           <a
+                             href={dok.signedUrl}
+                             target="_blank"
+                             rel="noopener noreferrer"
+                           >
+                              <Button variant="ghost" className="text-[#EAC956] hover:bg-[#EAC956] hover:text-[#3A2E00] rounded-xl h-10 px-4 flex items-center gap-2 group/btn transition-all">
+                                 Lihat Berkas <ExternalLink className="w-4 h-4 group-hover/btn:rotate-12 transition-transform" />
+                              </Button>
+                           </a>
+                         )}
+                      </div>
                    </div>
                 </div>
               </div>

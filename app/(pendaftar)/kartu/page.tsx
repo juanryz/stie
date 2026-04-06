@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { LABEL_JALUR, LABEL_STATUS } from "@/types";
@@ -7,6 +8,7 @@ import { formatTanggal } from "@/lib/utils";
 import { PrintButton } from "./print-button";
 import { 
   CreditCard, 
+  ArrowLeft,
   Printer, 
   ShieldCheck, 
   Info, 
@@ -43,9 +45,14 @@ export default async function KartuPage() {
        {/* HEADER */}
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 border-b border-[#2D2A26] pb-10 print:hidden">
         <div>
-          <div className="inline-flex items-center gap-3 bg-[#EAC956]/10 text-[#EAC956] px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-6 border border-[#EAC956]/20 ring-1 ring-[#EAC956]/10">
-            <CreditCard className="w-4 h-4" />
-            Kartu Identitas
+          <div className="flex items-center gap-4 mb-6">
+            <Link href={`/status?noPendaftaran=${pendaftar.noPendaftaran}`} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 text-[#D2CEBE] hover:text-white transition-all text-xs font-bold tracking-widest uppercase">
+               <ArrowLeft className="h-4 w-4" /> Kembali
+            </Link>
+            <div className="inline-flex items-center gap-2 bg-[#EAC956]/10 text-[#EAC956] px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest border border-[#EAC956]/20 ring-1 ring-[#EAC956]/10">
+              <CreditCard className="w-4 h-4" />
+              Kartu Identitas
+            </div>
           </div>
           <h1 className="text-5xl text-white font-normal tracking-tight">Kartu Pendaftaran</h1>
           <p className="text-[#D2CEBE] font-light mt-2 italic">Gunakan kartu ini sebagai tanda pengenal resmi selama proses seleksi PMB.</p>
