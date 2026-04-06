@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -290,45 +290,6 @@ export function M3Shell({ children }: { children: React.ReactNode }) {
         </div>
       </main>
 
-      <style jsx global>{`
-        :root {
-          --primary-color: ${pColor};
-          --primary-glow: ${pColor}33;
-        }
-        
-        /* AGGRESSIVE OVERRIDES FOR TAILWIND HARDCODED COLORS */
-        [class*="text-[#EAC956]"] { color: ${pColor} !important; }
-        [class*="bg-[#EAC956]"] { background-color: ${pColor} !important; }
-        [class*="border-[#EAC956]"] { border-color: ${pColor} !important; }
-        [class*="ring-[#EAC956]"] { 
-           --tw-ring-color: ${pColor} !important; 
-           border-color: ${pColor} !important;
-        }
-
-        /* HOVER STATES */
-        [class*="hover:text-[#EAC956]"]:hover { color: ${pColor} !important; }
-        [class*="hover:bg-[#EAC956]"]:hover { background-color: ${pColor} !important; }
-        [class*="hover:border-[#EAC956]"]:hover { border-color: ${pColor} !important; }
-
-        /* GROUP HOVER */
-        .group:hover [class*="group-hover:text-[#EAC956]"] { color: ${pColor} !important; }
-        .group:hover [class*="group-hover:bg-[#EAC956]"] { background-color: ${pColor} !important; }
-        .group:hover [class*="group-hover:border-[#EAC956]"] { border-color: ${pColor} !important; }
-
-        /* SPECIAL OVERRIDES FOR COMMON ELEMENTS */
-        .text-primary { color: ${pColor} !important; }
-        .bg-primary { background-color: ${pColor} !important; }
-        
-        /* SCROLLBAR */
-        ::-webkit-scrollbar-thumb:hover {
-          background: ${pColor} !important;
-        }
-        
-        /* BUTTONS */
-        button[class*="bg-[#EAC956]"]:hover {
-           filter: brightness(1.2);
-        }
-      `}</style>
     </div>
   );
 }

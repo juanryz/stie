@@ -2,31 +2,19 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  Settings, 
-  User, 
-  Lock, 
-  Bell, 
-  Globe, 
-  ShieldCheck, 
-  Laptop, 
-  Palette, 
-  Save, 
-  Search,
+import {
+  Settings,
+  User,
+  Globe,
+  ShieldCheck,
+  Save,
   ChevronRight,
-  Upload,
   Loader2,
   Trash2,
   LogOut,
-  Sparkles,
   ArrowRight,
   Fingerprint,
-  KeyRound,
-  Eye,
-  EyeOff,
   CloudUpload,
-  RefreshCw,
-  CheckCircle2,
   AlertCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -42,14 +30,13 @@ export default function UnifiedSettingsPage() {
   const [activeTab, setActiveTab] = useState("Profil");
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showPass, setShowPass] = useState(false);
-  
+  const pColor = "#EAC956";
+
   const [config, setConfig] = useState({
     id: "",
     namaInstansi: "STIE Anindyaguna Semarang",
     emailKontak: "admin@stie-anindyaguna.ac.id",
     logoUrl: null as string | null,
-    primaryColor: "#EAC956"
   });
 
   const [security, setSecurity] = useState({
@@ -137,20 +124,6 @@ export default function UnifiedSettingsPage() {
     }
   };
 
-  const handleChangeColor = async (color: string) => {
-     const newConfig = { ...config, primaryColor: color };
-     setConfig(newConfig);
-     // Auto save color change
-     try {
-        await fetch("/api/settings", {
-           method: "POST",
-           headers: { "Content-Type": "application/json" },
-           body: JSON.stringify(newConfig)
-        });
-        window.dispatchEvent(new Event("config-updated"));
-        toast.success("Skema Warna Diperbarui!");
-     } catch (e) {}
-  };
 
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -168,8 +141,6 @@ export default function UnifiedSettingsPage() {
         <Loader2 className="w-12 h-12 animate-spin text-[#EAC956]" />
      </div>
   );
-
-  const pColor = config.primaryColor || "#EAC956";
 
   // RENDER PENDAFTAR VIEW
   if (!isAdmin) {
@@ -320,7 +291,6 @@ export default function UnifiedSettingsPage() {
             { id: "Profil", icon: <User />, label: "Identitas", sub: "Logo & Nama" },
             { id: "Keamanan", icon: <ShieldCheck />, label: "Otentikasi", sub: "Akses & Password" },
             { id: "Integrasi", icon: <Globe />, label: "Konektivitas", sub: "API Cloud" },
-            { id: "Tampilan", icon: <Palette />, label: "Visualisasi", sub: "Tema Warna" }
           ].map((tab) => (
             <button
               key={tab.id}
@@ -422,7 +392,7 @@ export default function UnifiedSettingsPage() {
                        <div className="space-y-8">
                          <div className="space-y-3 relative">
                             <label className="text-[10px] font-bold text-[#6A685F] uppercase tracking-widest ml-2">Password Saat Ini</label>
-                            <input type={showPass ? "text" : "password"} value={security.oldPass} onChange={(e) => setSecurity({...security, oldPass: e.target.value})} className="w-full bg-[#111111] border border-[#2D2A26] rounded-3xl h-16 px-8 text-xl text-white focus:border-[var(--primary)] transition-all" style={{"--primary": pColor} as any} />
+                            <input type="password" value={security.oldPass} onChange={(e) => setSecurity({...security, oldPass: e.target.value})} className="w-full bg-[#111111] border border-[#2D2A26] rounded-3xl h-16 px-8 text-xl text-white focus:border-[var(--primary)] transition-all" style={{"--primary": pColor} as any} />
                          </div>
                          <div className="space-y-3">
                             <label className="text-[10px] font-bold text-[#6A685F] uppercase tracking-widest ml-2">Password Baru</label>
@@ -432,35 +402,6 @@ export default function UnifiedSettingsPage() {
                             <label className="text-[10px] font-bold text-[#6A685F] uppercase tracking-widest ml-2">Konfirmasi Password</label>
                             <input type="password" value={security.confirmPass} onChange={(e) => setSecurity({...security, confirmPass: e.target.value})} className="w-full bg-[#111111] border border-[#2D2A26] rounded-3xl h-16 px-8 text-xl text-white focus:border-[var(--primary)] transition-all" style={{"--primary": pColor} as any} />
                          </div>
-                       </div>
-                    </div>
-                 )}
-
-                 {activeTab === "Tampilan" && (
-                    <div className="space-y-12">
-                       <div>
-                          <label className="text-[10px] font-bold text-[#6A685F] uppercase tracking-[0.25em] mb-10 block ml-2">Skema Warna Primer (Brand Color)</label>
-                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
-                             {[
-                                { name: "Dark Amber", color: "#EAC956" },
-                                { name: "Ocean Blue", color: "#3B82F6" },
-                                { name: "Deep Purple", color: "#A855F7" },
-                                { name: "Cyber Emerald", color: "#10B981" },
-                                { name: "Crimson Red", color: "#EF4444" },
-                                { name: "Hot Pink", color: "#EC4899" },
-                                { name: "Burnt Orange", color: "#F97316" },
-                                { name: "Pure White", color: "#FFFFFF" }
-                             ].map((c) => (
-                                <button key={c.color} onClick={() => handleChangeColor(c.color)} className={`p-6 rounded-[32px] border transition-all text-left group overflow-hidden relative ${config.primaryColor === c.color ? "border-white/20 bg-white/5" : "bg-[#111111] border-[#2D2A26] hover:border-white/10"}`}>
-                                   <div className="w-12 h-12 rounded-2xl mb-4 transition-transform group-hover:scale-110 shadow-lg" style={{backgroundColor: c.color}} />
-                                   <p className="text-white text-sm font-bold tracking-tight mb-1">{c.name}</p>
-                                   <div className="flex items-center gap-2 opacity-40 text-[10px] uppercase font-bold text-[#6A685F]">
-                                      {config.primaryColor === c.color ? <CheckCircle2 className="w-3 h-3 text-green-400" /> : null}
-                                      {c.color}
-                                   </div>
-                                </button>
-                             ))}
-                          </div>
                        </div>
                     </div>
                  )}
