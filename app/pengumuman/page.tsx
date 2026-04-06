@@ -18,6 +18,8 @@ export default function PengumumanPage() {
   const [showModal, setShowModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editId, setEditId] = useState<string | null>(null);
 
   // FORM STATES
   const [formData, setFormData] = useState({
@@ -51,7 +53,7 @@ export default function PengumumanPage() {
     }
   };
 
-  const handleCreate = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.gambarUrls.length > 8) {
        toast.error("Maksimal 8 gambar!");
@@ -59,24 +61,64 @@ export default function PengumumanPage() {
     }
     setIsSubmitting(true);
     try {
-      const res = await fetch("/api/pengumuman", {
-        method: "POST",
+      const url = isEditing ? `/api/pengumuman?id=${editId}` : "/api/pengumuman";
+      const method = isEditing ? "PATCH" : "POST";
+      
+      const res = await fetch(url, {
+        method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)
       });
       const result = await res.json();
       if (res.ok) {
         setShowModal(false);
-        setFormData({ judul: "", konten: "", ringkasan: "", gambarUrls: [], kategori: "Akademik", pin: false });
-        toast.success("Pengumuman berhasil diterbitkan!");
+        resetForm();
+        toast.success(isEditing ? "Pengumuman berhasil diperbarui!" : "Pengumuman berhasil diterbitkan!");
         fetchData();
       } else {
-        toast.error(result.error || "Gagal menambahkan pengumuman.");
+        toast.error(result.error || "Gagal memproses pengumuman.");
       }
     } catch (err) {
       toast.error("Gagal terhubung ke server.");
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({ judul: "", konten: "", ringkasan: "", gambarUrls: [], kategori: "Akademik", pin: false });
+    setIsEditing(false);
+    setEditId(null);
+  };
+
+  const handleEdit = (item: any) => {
+    setFormData({
+      judul: item.judul,
+      konten: item.konten,
+      ringkasan: item.ringkasan || "",
+      gambarUrls: item.gambarUrls || [],
+      kategori: item.kategori || "Akademik",
+      pin: item.pin || false
+    });
+    setEditId(item.id);
+    setIsEditing(true);
+    setShowModal(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Apakah Anda yakin ingin menghapus pengumuman ini?")) return;
+    
+    try {
+      const res = await fetch(`/api/pengumuman?id=${id}`, { method: "DELETE" });
+      if (res.ok) {
+        toast.success("Pengumuman berhasil dihapus.");
+        fetchData();
+        if (selectedItem?.id === id) setSelectedItem(null);
+      } else {
+        toast.error("Gagal menghapus pengumuman.");
+      }
+    } catch (err) {
+      toast.error("Terjadi kesalahan jaringan.");
     }
   };
 
@@ -148,7 +190,7 @@ export default function PengumumanPage() {
         </div>
         
         <Button 
-          onClick={() => setShowModal(true)}
+          onClick={() => { resetForm(); setShowModal(true); }}
           className="bg-[#EAC956] hover:bg-[#FCE68A] text-[#3A2E00] rounded-2xl h-14 px-8 font-bold flex items-center gap-2 shadow-2xl transition-all hover:scale-105"
         >
           <Plus className="w-5 h-5" /> Buat Pengumuman Baru
@@ -213,7 +255,13 @@ export default function PengumumanPage() {
                          <div className="w-8 h-8 rounded-full bg-[#EAC956]/10 flex items-center justify-center text-[#EAC956] text-xs font-bold border border-[#EAC956]/20">
                             {item.diubahOleh?.[0] || 'A'}
                          </div>
-                         <span className="text-[10px] text-[#6A685F] font-bold uppercase">{item.diubahOleh}</span>
+                         <div className="flex flex-col">
+                            <span className="text-[10px] text-[#6A685F] font-bold uppercase">{item.diubahOleh}</span>
+                            <div className="flex gap-2 mt-1">
+                               <button onClick={() => handleEdit(item)} className="text-[10px] font-bold text-[#EAC956] hover:underline uppercase tracking-tighter">Edit</button>
+                               <button onClick={() => handleDelete(item.id)} className="text-[10px] font-bold text-red-500 hover:underline uppercase tracking-tighter">Hapus</button>
+                            </div>
+                         </div>
                       </div>
                       <button 
                         onClick={() => setSelectedItem(item)}
@@ -241,7 +289,7 @@ export default function PengumumanPage() {
              >
                 <div className="flex justify-between items-center mb-12">
                    <div>
-                      <h2 className="text-4xl text-white font-normal mb-2">Penerbitan Pengumuman</h2>
+                      <h2 className="text-4xl text-white font-normal mb-2">{isEditing ? "Perbarui Pengumuman" : "Penerbitan Pengumuman"}</h2>
                       <p className="text-[#6A685F] text-sm">Informasi ini akan langsung dipublikasikan ke portal publik.</p>
                    </div>
                    <button onClick={() => setShowModal(false)} className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-[#6A685F] hover:text-white transition-all ring-1 ring-white/5">
@@ -249,7 +297,7 @@ export default function PengumumanPage() {
                    </button>
                 </div>
 
-                <form onSubmit={handleCreate} className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                    <div className="space-y-8">
                       <div className="space-y-3">
                          <label className="text-xs uppercase font-extrabold tracking-[0.2em] text-[#EAC956] ml-2">Subjek Pengumuman</label>
@@ -341,7 +389,7 @@ export default function PengumumanPage() {
                           type="submit" disabled={isSubmitting}
                           className="w-full h-20 bg-[#EAC956] hover:bg-[#FCE68A] text-[#3A2E00] rounded-[36px] font-extrabold flex items-center justify-center gap-4 text-2xl shadow-3xl transition-all disabled:opacity-50"
                          >
-                           {isSubmitting ? <Loader2 className="w-8 h-8 animate-spin" /> : <><Plus className="w-8 h-8" /> TERBITKAN SEKARANG</>}
+                           {isSubmitting ? <Loader2 className="w-8 h-8 animate-spin" /> : <>{isEditing ? <Check className="w-8 h-8" /> : <Plus className="w-8 h-8" />} {isEditing ? "SIMPAN PERUBAHAN" : "TERBITKAN SEKARANG"}</>}
                          </Button>
                       </div>
                    </div>

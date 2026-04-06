@@ -7,7 +7,7 @@ import { usePendaftaranFormStore, type DokumenFiles } from "@/store/pendaftaran-
 import {
   ALLOWED_MIME_TYPES,
   MAX_FILE_SIZE,
-} from "@/lib/storage";
+} from "@/lib/storage-config";
 import { cn } from "@/lib/utils";
 import { formatUkuranFile } from "@/lib/utils";
 import { JenisDokumen } from "@prisma/client";

@@ -306,8 +306,8 @@ export function LandingPageClient({ periode, prodiList, isPmbOpen, announcements
       <footer className="px-8 sm:px-16 lg:px-24 py-16 border-t border-[#2D2A26] bg-[#111111] relative">
          <div className="flex flex-col md:flex-row justify-between items-center gap-10">
             <div className="flex items-center gap-4 group">
-               <div className="p-3 bg-[#EAC956]/10 rounded-2xl group-hover:bg-[#EAC956]/20 transition-colors">
-                  <GraduationCap className="w-8 h-8 text-[#EAC956]" />
+               <div className="p-0.5 bg-[#EAC956]/10 rounded-2xl group-hover:bg-[#EAC956]/20 transition-colors w-14 h-14 overflow-hidden shadow-lg border border-white/5">
+                  <img src="/images/logo.jpg" className="w-full h-full object-cover" />
                </div>
                <div>
                   <h4 className="text-white font-bold text-xl tracking-tight">STIE Anindyaguna</h4>

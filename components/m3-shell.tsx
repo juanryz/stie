@@ -173,7 +173,7 @@ export function M3Shell({ children }: { children: React.ReactNode }) {
          <div className="flex items-center gap-3">
             <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(true)} className="hover:bg-white/5 rounded-xl text-[#EAC956]"><Menu className="w-6 h-6" /></Button>
             <div onClick={() => navigateTo("/", "home")} className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer">
-              <div className="rounded-xl shrink-0 flex items-center justify-center w-8 h-8 overflow-hidden shadow-sm ring-1 ring-white/10 bg-transparent">
+              <div className="rounded-xl shrink-0 flex items-center justify-center w-12 h-12 overflow-hidden bg-white">
                 <img src={config?.logoUrl || "/images/logo.jpg"} className="w-full h-full object-cover" />
               </div>
               <span className="font-bold text-[#F8F6F1] tracking-tight truncate max-w-[120px]">{config?.namaInstansi || "STIE PMB"}</span>
@@ -183,8 +183,8 @@ export function M3Shell({ children }: { children: React.ReactNode }) {
 
       <nav className="hidden md:flex flex-col w-[100px] h-screen py-10 items-center justify-between bg-[#111111] shrink-0 border-r border-[#2D2A26] z-50 relative">
         <div onClick={() => navigateTo("/", "home")} className="flex flex-col items-center group/logo hover:opacity-80 transition-opacity cursor-pointer">
-            <div className="rounded-2xl mb-2 group-hover/logo:scale-110 transition-transform w-[60px] h-[60px] flex items-center justify-center overflow-hidden shadow-lg ring-1 ring-white/10 bg-transparent">
-               <img src={config?.logoUrl || "/images/logo.jpg"} className="w-full h-full object-cover scale-[1.02]" />
+            <div className="rounded-2xl mb-4 w-20 h-20 flex items-center justify-center overflow-hidden bg-white">
+               <img src={config?.logoUrl || "/images/logo.jpg"} className="w-full h-full object-cover" />
             </div>
             <div className="text-[10px] font-bold tracking-tighter uppercase px-2 text-center leading-none mt-1 text-[#EAC956]">
                {config?.namaInstansi?.split(' ')?.[0] || 'STIE'}
@@ -226,8 +226,8 @@ export function M3Shell({ children }: { children: React.ReactNode }) {
           <motion.div initial={{ opacity: 0, x: -100 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -100 }} className="fixed inset-0 z-50 bg-[#111111]/95 backdrop-blur-2xl p-8 flex flex-col">
              <div className="flex justify-between items-center mb-16">
                 <div className="flex items-center gap-4">
-                   <div className="rounded-2xl w-14 h-14 flex items-center justify-center overflow-hidden shrink-0 shadow-lg border border-white/10 bg-transparent">
-                      <img src={config?.logoUrl || "/images/logo.jpg"} className="w-full h-full object-cover scale-[1.02]" />
+                   <div className="rounded-2xl w-16 h-16 flex items-center justify-center overflow-hidden shrink-0 bg-white">
+                      <img src={config?.logoUrl || "/images/logo.jpg"} className="w-full h-full object-cover" />
                    </div>
                    <div className="flex flex-col">
                      <span className="text-2xl font-bold text-white tracking-tight leading-none mb-1">{config?.namaInstansi || "STIE PMB"}</span>

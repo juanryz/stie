@@ -4,7 +4,7 @@ import { useState, useRef } from "react";
 import { UploadCloud, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { MAX_FILE_SIZE, ALLOWED_MIME_TYPES } from "@/lib/storage";
+import { MAX_FILE_SIZE, ALLOWED_MIME_TYPES } from "@/lib/storage-config";
 import type { JenisDokumen } from "@prisma/client";
 import { formatUkuranFile } from "@/lib/utils";
 
