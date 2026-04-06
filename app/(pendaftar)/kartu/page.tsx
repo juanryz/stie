@@ -66,9 +66,9 @@ export default async function KartuPage() {
             {/* Header kartu */}
             <div className="bg-[#EAC956] p-10 flex flex-col md:flex-row justify-between items-center gap-6 print:bg-gray-100 print:text-black">
                <div className="flex items-center gap-6">
-                   <div className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-3xl flex items-center justify-center p-3 border border-white/30 overflow-hidden shadow-2xl">
+                   <div className="w-20 h-20 rounded-3xl flex items-center justify-center overflow-hidden shadow-2xl bg-transparent border-2 border-white/20 ring-4 ring-white/5">
                       {config?.logoUrl ? (
-                         <img src={config.logoUrl} className="w-full h-full object-cover" />
+                         <img src={config.logoUrl} className="w-full h-full object-cover scale-[1.02]" />
                       ) : (
                          <GraduationCap className="w-10 h-10 text-[#3A2E00]" />
                       )}

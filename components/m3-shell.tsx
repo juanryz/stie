@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  GraduationCap,
   Home,
   BookOpen,
   Layers,
@@ -26,8 +25,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { useSession, signOut } from "next-auth/react";
 
-function NavItem({ icon, label, active = false, color }: { icon: React.ReactNode, label: string, active?: boolean, color?: string }) {
-  const activeColor = color || "#EAC956";
+function NavItem({ icon, label, active = false }: { icon: React.ReactNode, label: string, active?: boolean }) {
+  const activeColor = "#EAC956";
   const contrastColor = "#3A2E00";
 
   return (
@@ -79,21 +78,6 @@ export function M3Shell({ children }: { children: React.ReactNode }) {
     return () => window.removeEventListener("config-updated", loadConfig);
   }, [pathname]);
 
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    if (pathname !== "/") return;
-    const container = e.currentTarget;
-    const scrollY = container.scrollTop;
-    const sections = ["home", "prodi", "jalur"];
-    let current = "home";
-    for (const section of sections) {
-      const element = document.getElementById(section);
-      if (element && element.offsetTop <= scrollY + 400) {
-        current = section;
-      }
-    }
-    setActiveSection(current);
-  };
-
   const navigateTo = (path: string, hash: string) => {
     setActiveSection(hash.replace("#", "") || "home");
     router.push(path);
@@ -113,7 +97,7 @@ export function M3Shell({ children }: { children: React.ReactNode }) {
              { icon: <Users />, label: "Pendaftar", path: "/pendaftar", hash: "pendaftar" },
              { icon: <ShieldCheck />, label: "Verifikasi", path: "/verifikasi", hash: "verifikasi" },
              { icon: <BarChart3 />, label: "Laporan", path: "/laporan", hash: "laporan" },
-             { icon: <Megaphone />, label: "Info", path: "/pengumuman", hash: "pengumuman" },
+             { icon: <Megaphone />, label: "Informasi", path: "/pengumuman", hash: "pengumuman" },
           ];
        } else {
           return [
@@ -129,7 +113,7 @@ export function M3Shell({ children }: { children: React.ReactNode }) {
       { icon: <Home />, label: "Beranda", path: "/", hash: "home" },
       { icon: <BookOpen />, label: "Prodi", path: "/#prodi", hash: "prodi" },
       { icon: <Layers />, label: "Jalur", path: "/#jalur", hash: "jalur" },
-      { icon: <Megaphone />, label: "Info", path: "/#informasi", hash: "informasi" },
+      { icon: <Megaphone />, label: "Informasi", path: "/#announcements", hash: "announcements" },
     ];
 
     if (isAuth && pathname === "/") {
@@ -142,6 +126,22 @@ export function M3Shell({ children }: { children: React.ReactNode }) {
   };
 
   const links = getLinks();
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    if (pathname !== "/") return;
+    const container = e.currentTarget;
+    const scrollY = container.scrollTop;
+    
+    const navLinks = links.filter(l => l.hash && document.getElementById(l.hash));
+    let current = "home";
+    for (const link of navLinks) {
+      const element = document.getElementById(link.hash);
+      if (element && element.offsetTop <= scrollY + 400) {
+        current = link.hash;
+      }
+    }
+    setActiveSection(current);
+  };
   
   useEffect(() => {
     const hash = window.location.hash.split("#")[1];
@@ -162,22 +162,19 @@ export function M3Shell({ children }: { children: React.ReactNode }) {
     }
   }, [pathname]);
 
-  const pColor = config?.primaryColor || "#EAC956";
-
   return (
-    <div className="min-h-screen bg-[#111111] text-[#E6E1E5] font-sans flex flex-col md:flex-row overflow-hidden selection:bg-[#EAC956]/30" 
-         style={{"--primary": pColor} as any}>
+    <div className="min-h-screen bg-[#111111] text-[#E6E1E5] font-sans flex flex-col md:flex-row overflow-hidden selection:bg-[#EAC956]/30">
        <div className="fixed top-0 left-0 w-full h-full pointer-events-none -z-0 opacity-40">
-        <div className="absolute top-[20%] left-[5%] w-[400px] h-[400px] rounded-full blur-[120px]" style={{backgroundColor: `${pColor}22`}} />
-        <div className="absolute bottom-[10%] right-[10%] w-[300px] h-[300px] rounded-full blur-[100px]" style={{backgroundColor: `${pColor}11`}} />
+        <div className="absolute top-[20%] left-[5%] w-[400px] h-[400px] rounded-full blur-[120px] bg-[#EAC956]/20" />
+        <div className="absolute bottom-[10%] right-[10%] w-[300px] h-[300px] rounded-full blur-[100px] bg-[#EAC956]/10" />
       </div>
 
       <div className="md:hidden flex items-center justify-between p-4 bg-[#111111]/80 backdrop-blur-xl border-b border-white/5 z-50">
          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(true)} className="hover:bg-white/5 rounded-xl" style={{color: pColor}}><Menu className="w-6 h-6" /></Button>
+            <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(true)} className="hover:bg-white/5 rounded-xl text-[#EAC956]"><Menu className="w-6 h-6" /></Button>
             <div onClick={() => navigateTo("/", "home")} className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer">
-              <div className="p-1.5 rounded-lg shrink-0" style={{backgroundColor: pColor}}>
-                {config?.logoUrl ? <img src={config.logoUrl} className="w-5 h-5 object-cover rounded" /> : <GraduationCap className="w-5 h-5 text-[#3A2E00]" />}
+              <div className="rounded-xl shrink-0 flex items-center justify-center w-8 h-8 overflow-hidden shadow-sm ring-1 ring-white/10 bg-transparent">
+                <img src={config?.logoUrl || "/images/logo.jpg"} className="w-full h-full object-cover" />
               </div>
               <span className="font-bold text-[#F8F6F1] tracking-tight truncate max-w-[120px]">{config?.namaInstansi || "STIE PMB"}</span>
             </div>
@@ -186,11 +183,10 @@ export function M3Shell({ children }: { children: React.ReactNode }) {
 
       <nav className="hidden md:flex flex-col w-[100px] h-screen py-10 items-center justify-between bg-[#111111] shrink-0 border-r border-[#2D2A26] z-50 relative">
         <div onClick={() => navigateTo("/", "home")} className="flex flex-col items-center group/logo hover:opacity-80 transition-opacity cursor-pointer">
-            <div className="p-1 rounded-2xl mb-2 ring-1 group-hover/logo:scale-110 transition-all w-16 h-16 flex items-center justify-center overflow-hidden" 
-                 style={{backgroundColor: `${pColor}11`, color: pColor, "--tw-ring-color": `${pColor}33`} as any}>
-               {config?.logoUrl ? <img src={config.logoUrl} className="w-full h-full object-cover" /> : <GraduationCap className="w-8 h-8" />}
+            <div className="rounded-2xl mb-2 group-hover/logo:scale-110 transition-transform w-[60px] h-[60px] flex items-center justify-center overflow-hidden shadow-lg ring-1 ring-white/10 bg-transparent">
+               <img src={config?.logoUrl || "/images/logo.jpg"} className="w-full h-full object-cover scale-[1.02]" />
             </div>
-            <div className="text-[10px] font-bold tracking-tighter uppercase px-2 text-center leading-none mt-1" style={{color: pColor}}>
+            <div className="text-[10px] font-bold tracking-tighter uppercase px-2 text-center leading-none mt-1 text-[#EAC956]">
                {config?.namaInstansi?.split(' ')?.[0] || 'STIE'}
             </div>
         </div>
@@ -198,7 +194,7 @@ export function M3Shell({ children }: { children: React.ReactNode }) {
         <div className="flex flex-col gap-8 flex-1 justify-center items-center">
           {links.map((link) => (
              <div key={link.hash} onClick={() => navigateTo(link.path, link.hash)}>
-                <NavItem icon={link.icon} label={link.label} active={activeSection === link.hash} color={pColor} />
+                <NavItem icon={link.icon} label={link.label} active={activeSection === link.hash} />
              </div>
           ))}
         </div>
@@ -211,7 +207,6 @@ export function M3Shell({ children }: { children: React.ReactNode }) {
                     icon={isAdmin ? <Settings /> : <UserCircle2 />} 
                     label="Profil Saya" 
                     active={activeSection === "settings"} 
-                    color={pColor}
                  />
                </div>
                <button onClick={() => signOut({ callbackUrl: "/" })} className="flex flex-col items-center gap-1.5 cursor-pointer group relative">
@@ -220,7 +215,7 @@ export function M3Shell({ children }: { children: React.ReactNode }) {
                </button>
              </>
            ) : (
-             <Link href="/login" onClick={() => setActiveSection("login")}><NavItem icon={<UserCircle2 />} label="Masuk" active={activeSection === "login"} color={pColor} /></Link>
+             <Link href="/login" onClick={() => setActiveSection("login")}><NavItem icon={<UserCircle2 />} label="Masuk" active={activeSection === "login"} /></Link>
            )}
            <div className="p-2.5 bg-green-500/5 text-green-500 rounded-xl border border-green-500/10 opacity-30 mx-auto"><ShieldCheck className="w-4 h-4" /></div>
         </div>
@@ -231,12 +226,12 @@ export function M3Shell({ children }: { children: React.ReactNode }) {
           <motion.div initial={{ opacity: 0, x: -100 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -100 }} className="fixed inset-0 z-50 bg-[#111111]/95 backdrop-blur-2xl p-8 flex flex-col">
              <div className="flex justify-between items-center mb-16">
                 <div className="flex items-center gap-4">
-                   <div className="p-2 rounded-2xl w-14 h-14 flex items-center justify-center overflow-hidden shrink-0" style={{backgroundColor: pColor}}>
-                      {config?.logoUrl ? <img src={config.logoUrl} className="w-full h-full object-cover" /> : <GraduationCap className="w-8 h-8 text-[#3A2E00]" />}
+                   <div className="rounded-2xl w-14 h-14 flex items-center justify-center overflow-hidden shrink-0 shadow-lg border border-white/10 bg-transparent">
+                      <img src={config?.logoUrl || "/images/logo.jpg"} className="w-full h-full object-cover scale-[1.02]" />
                    </div>
                    <div className="flex flex-col">
                      <span className="text-2xl font-bold text-white tracking-tight leading-none mb-1">{config?.namaInstansi || "STIE PMB"}</span>
-                     <span className="text-xs font-medium tracking-[0.2em] uppercase" style={{color: pColor}}>Portal Akademik</span>
+                     <span className="text-xs font-medium tracking-[0.2em] uppercase text-[#EAC956]">Portal Akademik</span>
                    </div>
                 </div>
                 <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(false)} className="hover:bg-white/5 text-white rounded-2xl"><X className="w-8 h-8" /></Button>
@@ -247,8 +242,7 @@ export function M3Shell({ children }: { children: React.ReactNode }) {
                  <motion.div key={item.hash} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.1 }}>
                    <div onClick={() => { setMobileMenuOpen(false); navigateTo(item.path, item.hash); }} className="transition-colors flex items-center justify-between group cursor-pointer hover:text-white">
                      <span className="group-hover:translate-x-2 transition-transform">{item.label}</span>
-                     <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-[#EAC956] group-hover:border-[#EAC956] group-hover:text-[#3A2E00] transition-all"
-                          style={{"--tw-ring-color": pColor} as any}>
+                     <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-[#EAC956] group-hover:border-[#EAC956] group-hover:text-[#3A2E00] transition-all ring-[#EAC956]">
                         {React.cloneElement(item.icon as any, { className: 'w-6 h-6' })}
                      </div>
                    </div>
@@ -272,8 +266,8 @@ export function M3Shell({ children }: { children: React.ReactNode }) {
                  </div>
                ) : (
                  <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }}>
-                   <div onClick={() => { setMobileMenuOpen(false); navigateTo("/login", "login"); }} className="flex items-center justify-between font-bold cursor-pointer transition-colors" style={{color: pColor}}>
-                      Login Admin <div className="w-12 h-12 rounded-full border flex items-center justify-center" style={{borderColor: pColor}}><UserCircle2 className="w-6 h-6" /></div>
+                   <div onClick={() => { setMobileMenuOpen(false); navigateTo("/login", "login"); }} className="flex items-center justify-between font-bold cursor-pointer transition-colors text-[#EAC956]">
+                      Login Admin <div className="w-12 h-12 rounded-full border flex items-center justify-center border-[#EAC956]"><UserCircle2 className="w-6 h-6" /></div>
                    </div>
                  </motion.div>
                )}
