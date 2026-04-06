@@ -14,6 +14,42 @@ const loginSchema = z.object({
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
   session: { strategy: "jwt" },
+  events: {
+    async signIn({ user, account }) {
+      if (account?.provider === "google" && user.email) {
+        await prisma.user.upsert({
+          where: { email: user.email },
+          update: { name: user.name ?? undefined },
+          create: {
+            email: user.email,
+            name: user.name ?? "",
+            role: "PENDAFTAR",
+          },
+        });
+      }
+    },
+  },
+  callbacks: {
+    ...authConfig.callbacks,
+    async jwt({ token, user, account }) {
+      if (user) {
+        token.id = user.id as string;
+        token.role = (user as any).role;
+      }
+      // Untuk Google OAuth: ambil role dari DB
+      if (account?.provider === "google" && token.email) {
+        const dbUser = await prisma.user.findUnique({
+          where: { email: token.email },
+          select: { id: true, role: true },
+        });
+        if (dbUser) {
+          token.id = dbUser.id;
+          token.role = dbUser.role;
+        }
+      }
+      return token;
+    },
+  },
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
