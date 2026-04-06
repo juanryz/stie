@@ -8,8 +8,8 @@ import {
   ALLOWED_MIME_TYPES,
   MAX_FILE_SIZE,
 } from "@/lib/storage";
+import { cn } from "@/lib/utils";
 import { formatUkuranFile } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { JenisDokumen } from "@prisma/client";
 
 interface DokumenField {
@@ -106,17 +106,21 @@ export function StepUploadDokumen() {
         ))}
       </div>
 
-      <div className="flex justify-between pt-2">
-        <Button type="button" variant="outline" onClick={prevStep} className="gap-2">
-          <ArrowLeft className="h-4 w-4" /> Kembali
-        </Button>
-        <Button
-          type="button"
-          onClick={handleNext}
-          className="bg-[#1B4F72] hover:bg-[#154060] gap-2"
+      <div className="flex justify-between items-center pt-10 border-t border-[#2D2A26] mt-12">
+        <button 
+          type="button" 
+          onClick={prevStep} 
+          className="h-16 px-8 bg-white/5 hover:bg-white/10 text-[#D2CEBE] rounded-[24px] font-bold text-lg flex items-center gap-3 transition-all border border-white/5"
         >
-          Lanjut <ArrowRight className="h-4 w-4" />
-        </Button>
+          <ArrowLeft className="w-6 h-6" /> Kembali
+        </button>
+        <button 
+          type="button" 
+          onClick={handleNext} 
+          className="h-16 px-12 bg-[#EAC956] hover:bg-[#FCE68A] text-[#3A2E00] rounded-[24px] font-bold text-lg flex items-center gap-3 shadow-3xl hover:scale-105 transition-all"
+        >
+          Lanjut ke Review <ArrowRight className="w-6 h-6" />
+        </button>
       </div>
     </div>
   );
@@ -160,24 +164,24 @@ function DokumenUploadRow({
   const displayError = localError ?? error;
 
   return (
-    <div className="rounded-lg border border-border p-3 space-y-2">
-      <div className="flex items-center justify-between">
+    <div className={cn("rounded-2xl border-2 border-[#2D2A26] bg-black/20 p-5 space-y-4 transition-colors group", file ? "border-[#EAC956]/50" : "hover:border-[#EAC956]/40", displayError && "border-red-400/50")}>
+      <div className="flex items-center justify-between gap-4">
         <div>
-          <p className="text-sm font-medium">
+          <p className="text-lg font-bold text-white mb-1">
             {field.label}
             {field.wajib ? (
-              <span className="text-destructive ml-1">*</span>
+              <span className="text-red-400 ml-1.5">*</span>
             ) : (
-              <span className="ml-1.5 text-xs text-muted-foreground">(opsional)</span>
+              <span className="ml-2 text-[10px] font-bold text-[#6A685F] uppercase tracking-widest">(opsional)</span>
             )}
           </p>
-          <p className="text-xs text-muted-foreground">{field.hint}</p>
+          <p className="text-xs text-[#D2CEBE] font-light">{field.hint}</p>
         </div>
         {file ? (
           <button
             type="button"
             onClick={() => { onFileChange(undefined); if (inputRef.current) inputRef.current.value = ""; }}
-            className="text-muted-foreground hover:text-destructive transition-colors"
+            className="h-10 w-10 flex items-center justify-center rounded-xl bg-red-400/10 text-red-400 hover:bg-red-400/20 transition-colors shrink-0"
             aria-label="Hapus file"
           >
             <Trash2 className="h-4 w-4" />
@@ -186,37 +190,38 @@ function DokumenUploadRow({
           <button
             type="button"
             onClick={() => inputRef.current?.click()}
-            className="flex items-center gap-1.5 text-xs text-[#1B4F72] font-medium hover:underline"
+            className="h-10 px-4 rounded-xl flex items-center gap-2 text-sm font-bold bg-white/5 text-white hover:bg-[#EAC956] hover:text-[#3A2E00] transition-colors shrink-0 border border-white/10"
           >
             <UploadCloud className="h-4 w-4" />
-            Pilih File
+            Upload
           </button>
         )}
       </div>
 
       {/* Preview / file info */}
       {file && (
-        <div className="flex items-center gap-2 rounded-md bg-muted/50 px-3 py-2">
+        <div className="flex items-center gap-4 rounded-xl bg-black/40 px-4 py-3 border border-[#2D2A26]">
           {isImage ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={URL.createObjectURL(file)}
               alt="preview"
-              className="h-10 w-10 object-cover rounded"
+              className="h-12 w-12 object-cover rounded-lg border border-white/10"
             />
           ) : (
-            <FileText className="h-8 w-8 text-[#1B4F72] shrink-0" />
+            <div className="h-12 w-12 rounded-lg bg-[#EAC956]/10 flex items-center justify-center text-[#EAC956]">
+               <FileText className="h-6 w-6" />
+            </div>
           )}
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-medium truncate">{file.name}</p>
-            <p className="text-xs text-muted-foreground">{formatUkuranFile(file.size)}</p>
+            <p className="text-sm font-bold text-white truncate">{file.name}</p>
+            <p className="text-[10px] font-bold text-[#EAC956] tracking-widest uppercase mt-0.5">{formatUkuranFile(file.size)}</p>
           </div>
-          {!isImage && <ImageIcon className="h-4 w-4 text-muted-foreground hidden" />}
         </div>
       )}
 
       {displayError && (
-        <p className="text-xs text-destructive">{displayError}</p>
+        <p className="text-[10px] font-bold text-red-400 tracking-tighter uppercase">{displayError}</p>
       )}
 
       <input

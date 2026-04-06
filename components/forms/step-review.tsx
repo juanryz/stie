@@ -135,33 +135,38 @@ export function StepReview({ prodiList }: StepReviewProps) {
       </ReviewSection>
 
       {/* Persetujuan */}
-      <div className="flex items-start gap-3 rounded-lg bg-muted/50 border border-border p-4">
+      <div className="flex items-start gap-4 rounded-2xl bg-[#EAC956]/5 border-2 border-[#EAC956]/20 p-6 mt-8 shadow-[0_0_20px_rgba(234,201,86,0.05)] transition-colors hover:border-[#EAC956]/40">
         <Checkbox
           id="setuju"
           checked={setuju}
           onCheckedChange={(v) => setSetuju(!!v)}
-          className="mt-0.5"
+          className="mt-1 h-6 w-6 border-2 border-[#EAC956] data-[state=checked]:bg-[#EAC956] data-[state=checked]:text-[#3A2E00] rounded-md shrink-0"
         />
-        <Label htmlFor="setuju" className="text-sm leading-relaxed cursor-pointer">
+        <Label htmlFor="setuju" className="text-[#D2CEBE] font-light leading-relaxed cursor-pointer text-sm">
           Saya menyatakan bahwa semua data dan dokumen yang saya isi adalah{" "}
-          <strong>benar dan dapat dipertanggungjawabkan</strong>. Saya memahami
+          <strong className="text-white font-bold">benar dan dapat dipertanggungjawabkan</strong>. Saya memahami
           bahwa data palsu dapat menyebabkan pembatalan pendaftaran.
         </Label>
       </div>
 
-      <div className="flex justify-between pt-2">
-        <Button type="button" variant="outline" onClick={prevStep} className="gap-2" disabled={isSubmitting}>
-          <ArrowLeft className="h-4 w-4" /> Kembali
-        </Button>
-        <Button
-          type="button"
-          onClick={handleSubmit}
-          disabled={!setuju || isSubmitting}
-          className="bg-[#1B4F72] hover:bg-[#154060] gap-2"
+      <div className="flex justify-between items-center pt-10 border-t border-[#2D2A26] mt-12">
+        <button 
+          type="button" 
+          onClick={prevStep} 
+          disabled={isSubmitting}
+          className="h-16 px-8 bg-white/5 hover:bg-white/10 text-[#D2CEBE] rounded-[24px] font-bold text-lg flex items-center gap-3 transition-all border border-white/5 disabled:opacity-50"
         >
-          {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
+          <ArrowLeft className="w-6 h-6" /> Kembali
+        </button>
+        <button 
+          type="button" 
+          onClick={handleSubmit} 
+          disabled={!setuju || isSubmitting}
+          className="h-16 px-12 bg-[#EAC956] hover:bg-[#FCE68A] text-[#3A2E00] rounded-[24px] font-bold text-lg flex items-center gap-3 shadow-3xl hover:scale-105 transition-all disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed"
+        >
+          {isSubmitting ? <Loader2 className="w-6 h-6 animate-spin" /> : <CheckCircle2 className="w-6 h-6" />}
           {isSubmitting ? "Mengirim..." : "Kirim Pendaftaran"}
-        </Button>
+        </button>
       </div>
     </div>
   );
@@ -169,11 +174,11 @@ export function StepReview({ prodiList }: StepReviewProps) {
 
 function ReviewSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-lg border border-border overflow-hidden">
-      <div className="bg-muted/50 px-4 py-2 border-b border-border">
-        <p className="text-sm font-semibold text-[#1B4F72]">{title}</p>
+    <div className="rounded-2xl border-2 border-[#2D2A26] bg-black/20 overflow-hidden group hover:border-[#EAC956]/40 transition-colors">
+      <div className="bg-[#EAC956]/5 px-6 py-4 border-b border-[#2D2A26] group-hover:bg-[#EAC956]/10 transition-colors">
+        <p className="text-[10px] font-bold text-[#EAC956] tracking-widest uppercase">{title}</p>
       </div>
-      <div className="px-4 py-3 space-y-2">{children}</div>
+      <div className="px-6 py-5 space-y-3">{children}</div>
     </div>
   );
 }
@@ -188,10 +193,10 @@ function ReviewRow({
   icon?: React.ReactNode;
 }) {
   return (
-    <div className="flex items-start gap-2 text-sm">
+    <div className="flex items-start gap-4 text-sm pb-3 border-b border-white/5 last:border-0 last:pb-0">
       {icon}
-      <span className="text-muted-foreground w-36 shrink-0">{label}</span>
-      <span className="font-medium break-all">{value ?? "-"}</span>
+      <span className="text-[#6A685F] text-xs font-bold uppercase tracking-widest w-40 shrink-0 mt-0.5">{label}</span>
+      <span className="font-light text-[#F8F6F1] break-all text-lg leading-tight">{value ?? "-"}</span>
     </div>
   );
 }

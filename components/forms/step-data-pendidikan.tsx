@@ -130,7 +130,7 @@ export function StepDataPendidikan() {
           type="submit" 
           className="h-16 px-12 bg-[#EAC956] hover:bg-[#FCE68A] text-[#3A2E00] rounded-[24px] font-bold text-lg flex items-center gap-3 shadow-3xl hover:scale-105 transition-all"
         >
-          Lanjut ke Dokumen <ArrowRight className="h-4 w-4" />
+          Lanjut ke Keluarga <ArrowRight className="w-6 h-6" />
         </button>
       </div>
     </form>
