@@ -5,6 +5,7 @@ import {
   Controller,
   ControllerProps,
   FieldValues,
+  Path,
   FormProvider,
   useFormContext,
 } from "react-hook-form"
@@ -16,7 +17,7 @@ const Form = FormProvider
 
 type FormFieldContextValue<
   TFieldValues extends FieldValues = FieldValues,
-  TName extends string = string
+  TName extends Path<TFieldValues> = Path<TFieldValues>
 > = {
   name: TName
 }
@@ -27,7 +28,7 @@ const FormFieldContext = React.createContext<FormFieldContextValue>(
 
 const FormField = <
   TFieldValues extends FieldValues = FieldValues,
-  TName extends string = string
+  TName extends Path<TFieldValues> = Path<TFieldValues>
 >({
   ...props
 }: ControllerProps<TFieldValues, TName>) => {
