@@ -25,35 +25,22 @@ import { usePendaftaranFormStore } from "@/store/pendaftaran-form";
 import { User, Fingerprint, MapPin, Phone, Mail, ArrowRight, Sparkles } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 
-const schema = z.object({
-  nama: z.string().min(3, "Nama minimal 3 karakter"),
-  nik: z.string().length(16, "NIK harus 16 digit"),
-  tempatLahir: z.string().min(2, "Tempat lahir wajib diisi"),
-  tanggalLahir: z.string().min(1, "Tanggal lahir wajib diisi"),
-  jenisKelamin: z.enum(["LAKI_LAKI", "PEREMPUAN"]),
-  agama: z.string().min(1, "Agama wajib diisi"),
-  alamat: z.string().min(10, "Alamat minimal 10 karakter"),
-  kota: z.string().min(2, "Kota wajib diisi"),
-  provinsi: z.string().min(2, "Provinsi wajib diisi"),
-  kodePos: z.string().optional(),
-  noHp: z.string().min(10, "No HP minimal 10 digit"),
-  email: z.string().email("Email tidak valid"),
-});
+import { dataPribadiSchema, type DataPribadiInput } from "@/lib/validations/pendaftaran";
 
 export function StepDataPribadi() {
   const { dataPribadi, setDataPribadi, setStep } = usePendaftaranFormStore();
   
-  const form = useForm<z.infer<typeof schema>>({
-    resolver: zodResolver(schema),
+  const form = useForm<DataPribadiInput>({
+    resolver: zodResolver(dataPribadiSchema),
     defaultValues: {
       nama: dataPribadi.nama || "",
       nik: dataPribadi.nik || "",
       tempatLahir: dataPribadi.tempatLahir || "",
-      tanggalLahir: dataPribadi.tanggalLahir instanceof Date 
-        ? dataPribadi.tanggalLahir.toISOString().split("T")[0] 
-        : (typeof dataPribadi.tanggalLahir === 'string' ? dataPribadi.tanggalLahir.split("T")[0] : ""),
-      jenisKelamin: dataPribadi.jenisKelamin as any || undefined,
-      agama: dataPribadi.agama || "",
+      tanggalLahir: (dataPribadi.tanggalLahir as any) instanceof Date 
+        ? ((dataPribadi.tanggalLahir as any) as Date).toISOString().split("T")[0] 
+        : (typeof dataPribadi.tanggalLahir === 'string' ? (dataPribadi.tanggalLahir as string).split("T")[0] : ""),
+      jenisKelamin: dataPribadi.jenisKelamin,
+      agama: (dataPribadi.agama as any) || undefined,
       alamat: dataPribadi.alamat || "",
       kota: dataPribadi.kota || "",
       provinsi: dataPribadi.provinsi || "",
@@ -63,13 +50,14 @@ export function StepDataPribadi() {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof schema>) => {
+  const onSubmit = (values: DataPribadiInput) => {
     setDataPribadi(values);
     setStep(2);
   };
 
   const inputClass = "h-14 bg-black/20 border-[#2D2A26] rounded-2xl px-6 text-white text-lg focus:ring-2 focus:ring-[#EAC956]/30 focus:border-[#EAC956] transition-all font-light placeholder:text-[#6A685F]";
   const labelClass = "text-[10px] font-bold text-[#EAC956] uppercase tracking-widest ml-1 mb-2 block";
+
 
   return (
     <Form {...form}>
